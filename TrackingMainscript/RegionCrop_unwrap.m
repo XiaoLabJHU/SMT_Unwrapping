@@ -22,7 +22,7 @@ function varargout = RegionCrop_unwrap(varargin)
 
 % Edit the above text to modify the response to help RegionCrop_unwrap
 
-% Last Modified by GUIDE v2.5 09-Dec-2017 09:58:35
+% Last Modified by GUIDE v2.5 03-Nov-2020 18:10:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,6 +61,7 @@ setappdata(handles.Datahandle,'CellInformation',[]); % initialize appdata
 handles.pixelS = 81.25;
 % Choose default command line output for RegionCrop_unwrap
 handles.output = hObject;
+movegui(gcf,'center');
 
 % Update handles structure
 guidata(hObject, handles);
@@ -137,7 +138,7 @@ imshow(ImBF,[]); % show the bf image
 hold on
 for ii = 1 : length(TrackP) % plot the traces
     trace = TrackP(ii).XYCoord;    
-    plot(trace(:,1),trace(:,2));
+    plot(trace(:,1),trace(:,2),'LineWidth',3);
 end
 % present the exsited ROIs
 if handles.ROInum>0
@@ -214,7 +215,7 @@ handles.trackP = [];
 for ii = 1 : length(handles.tracks)
     trace = handles.tracks(ii).Coordinates;    
                                                      % 
-    plot(trace(:,2),trace(:,3));
+    plot(trace(:,2),trace(:,3),'LineWidth',3);
     handles.trackP(ii,1).XYCoord = trace(:,2:3) + 0.5; % extract the x-y coordinates and convert to pixel unit
     % plus 0.5 because the thunderstorm thinks the topleft corner of a image is [0,0] while matlab thinks it is [0.5,0.5]
     handles.trackP(ii,1).XYCenter = mean( trace(:,2:3) + 0.5,1); % find the center of each trace
@@ -279,7 +280,7 @@ path=handles.BF1path;
 name=handles.BF1file;
 index=find(name=='.');
 % Newfolder=name(1:index-1);
-Newname=[ 'TraceInfo-' name(1:index) 'mat'];
+Newname=[handles.Date '-TraceInfo-' name(1:index) 'mat'];
 % Folderex=exist(Newfolder,'file');
 % if Folderex==0
 % mkdir(path,Newfolder);
@@ -350,6 +351,31 @@ guidata(hObject,handles);
 % --- Executes during object creation, after setting all properties.
 function edit1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit3_Callback(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit3 as text
+%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+handles.Date = get(hObject,'String');
+guidata(hObject,handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function edit3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
