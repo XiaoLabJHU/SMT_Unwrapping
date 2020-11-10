@@ -64,7 +64,7 @@ imshow(handles.BF1,[]);
 hold on
 for ii = 1 : length(handles.TrackcO)
     trace = handles.TrackcO(ii).XYZCoord;
-    plot(trace(:,1),trace(:,2))
+    plot(trace(:,1),trace(:,2),'-','LineWidth',2)
 end
 
 % Choose default command line output 
@@ -145,7 +145,7 @@ if strcmp(response,'Yes')
         TrackcOR(ii).XYZCoord(:,3) = trace(:,3);
         TrackcOR(ii).Time = Time;
         TrackcOR(ii).Intensity = Intensity;
-        plot(trace_rot(:,1),trace_rot(:,2));
+        plot(trace_rot(:,1),trace_rot(:,2),'.-','LineWidth',2);
         clear trace_rot
     end
     handles.TrackcOR = TrackcOR;

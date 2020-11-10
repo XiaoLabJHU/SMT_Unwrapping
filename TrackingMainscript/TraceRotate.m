@@ -63,10 +63,10 @@ hold off
 imshow(handles.BF1,[]);
 hold on
 for ii = 1 : length(handles.TrackcO)
-    trace = handles.TrackcO(ii).XYZCoord;
+    trace = handles.TrackcO(ii).XYCoord;
     plot(trace(:,1),trace(:,2))
 end
-
+movegui(gcf,'center');
 % Choose default command line output 
 handles.output = hObject;
 
@@ -133,7 +133,7 @@ if strcmp(response,'Yes')
     imshow(BFRot,[handles.LowI1 handles.HighI1]);
     hold on
     for ii = 1 : length(handles.TrackcO)
-        trace = handles.TrackcO(ii).XYZCoord;
+        trace = handles.TrackcO(ii).XYCoord;
         Time = handles.TrackcO(ii).Time;
         Intensity = handles.TrackcO(ii).Intensity;
         for jj = 1 : size(trace,1)
@@ -141,8 +141,7 @@ if strcmp(response,'Yes')
             Coord_rot = coord2dRot( Coords,[ImX,ImY],-Angle);
             trace_rot(jj,:) = Coord_rot;
         end
-        TrackcOR(ii).XYZCoord(:,1:2) = trace_rot;
-        TrackcOR(ii).XYZCoord(:,3) = trace(:,3);
+        TrackcOR(ii).XYCoord(:,1:2) = trace_rot;
         TrackcOR(ii).Time = Time;
         TrackcOR(ii).Intensity = Intensity;
         plot(trace_rot(:,1),trace_rot(:,2));
@@ -334,14 +333,14 @@ function Z_gen_tag_Callback(hObject, eventdata, handles)
      axes(handles.unwrap_trace_tag);
      hold off
      for ii = 1 : length(TrackcOR)
-         trace = TrackcOR(ii).XYZCoord;
+         trace = TrackcOR(ii).XYCoord;
          Time = TrackcOR(ii).Time;
          Intensity = TrackcOR(ii).Intensity;
          for jj = 1 : size(trace,1)
              Coord_temp = trace(jj,:);
-             Coord_unwrap_1 = unwrapTraj3D( Center, SRadius(1), Coord_temp ); % big radius
-             Coord_unwrap_2 = unwrapTraj3D( Center, SRadius(2), Coord_temp ); % median radius
-             Coord_unwrap_3 = unwrapTraj3D( Center, SRadius(3), Coord_temp ); % small radius
+             Coord_unwrap_1 = unwrapTraj( Center, SRadius(1), Coord_temp ); % big radius
+             Coord_unwrap_2 = unwrapTraj( Center, SRadius(2), Coord_temp ); % median radius
+             Coord_unwrap_3 = unwrapTraj( Center, SRadius(3), Coord_temp ); % small radius
              trace_unwrap(jj,:) = [Coord_unwrap_1,Coord_unwrap_2,Coord_unwrap_3];
          end
          TrackcOR_unwrap(ii).XYZCoord = trace_unwrap;

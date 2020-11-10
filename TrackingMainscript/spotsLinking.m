@@ -109,12 +109,12 @@ for ii = 1:ceil(length(filenameL)/5) % only do 20% of the data
     [data txt] = xlsread([pathname filenameL{ii}]);% read the .csv file
     Frame = data(:,2); % frame number
     Coordxyz = data(:,3:4); % xy-coordinates
-    if strcmp(txt{1,5}, 'z [nm]')
+    if startsWith(txt{1,5}, 'z')
         Coordxyz(:,3) = data(:,5)*ZcF; % z-coordinates
     else
         Coordxyz(:,3) = 0; % z-coordinates
     end
-    Ic = strfind(txt, 'intensity [photon]');
+    Ic = strfind(txt, 'intensity');
     IndexC = find(not(cellfun('isempty', Ic)));
     Intensity = data(:,IndexC); % spots intensity
     Tn = max(Frame);
@@ -175,7 +175,7 @@ s1.MarkerFaceColor = [0.979166666666667,0.5,0.4453125];
 title(['Mean Lifetime = ' num2str(mean(Gap)) 's']);
 xlabel('Off Time (Frame)');
 ylabel('Events');
-set(gca,'Box','Off','LineWidth',1.5,'FontSize',12,'TickDir','out','XColor',[0 0 0],'YColor',[0 0 0])
+set(gca,'Box','Off','LineWidth',1.5,'FontSize',12,'TickDir','out','XColor','k','YColor','k')
 set(handles.figure1,'PaperUnits','inches','PaperPosition',[0 0 11.5 6.5],'PaperSize',[11.5 6.5]);
 print(handles.figure1,['Gap_Distribution-' num2str(max(Gap)) '.pdf'],'-dpdf');
 % save the filenames
@@ -335,12 +335,12 @@ for ii = 1:ceil(length(filename)) % only do 20% of the data
     [data txt] = xlsread([pathname filename{ii}]);% read the .csv file
     Frame = data(:,2); % frame number
     Coordxyz = data(:,3:4); % xy-coordinates
-    if strcmp(txt{1,5}, 'z [nm]')
+    if startsWith(txt{1,5}, 'z')
         Coordxyz(:,3) = data(:,5)*ZcF; % z-coordinates
     else
         Coordxyz(:,3) = 0; % z-coordinates
     end
-    Ic = strfind(txt, 'intensity [photon]');
+    Ic = strfind(txt, 'intensity');
     IndexC = find(not(cellfun('isempty', Ic)));
     Intensity = data(:,IndexC); % spots intensity
     Tn = max(Frame);
