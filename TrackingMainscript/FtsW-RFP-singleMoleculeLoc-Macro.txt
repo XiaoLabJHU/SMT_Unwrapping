@@ -1,0 +1,24 @@
+inputFolder = getDirectory("ThunderSTORM- Choose the input folder!");
+images = getFileList(inputFolder);
+outputFolder = getDirectory("ThunderSTORM- Choose the output folder!");
+
+for (i=0; i<images.length; i++) {
+
+   name =  images[i];
+   datapaths = inputFolder + name;
+   lofname = lengthOf(name);
+   corename = substring(name,0,lofname-3);
+   ext = "csv";
+   respaths = outputFolder + corename + ext;
+   open(datapaths);
+   wait(1000);
+   run("Camera setup", "offset=0 quantumefficiency=0.96 isemgain=true photons2adu=9.93 gainem=300.0 pixelsize=81.25");
+   wait(1000);
+   run("Run analysis", "filter=[Wavelet filter (B-Spline)] scale=2.0 order=3 detector=[Local maximum] connectivity=8-neighbourhood threshold=1.5*std(Wave.F1) estimator=[PSF: Gaussian] sigma=1.0 fitradius=3 method=[Least squares] full_image_fitting=false mfaenabled=false renderer=[No Renderer]");
+   wait(1000);
+   run("Show results table", "action=filter formula=[sigma > 50 & sigma <300]");
+   wait(1000);
+   run("Export results", "filepath=["+respaths+"] fileformat=[CSV (comma separated)] id=true frame=true sigma=true chi2=true uncertainty_xy=true bkgstd=true intensity=true saveprotocol=true offset=true y=true x=true");
+   wait(1000);
+   close();
+};
