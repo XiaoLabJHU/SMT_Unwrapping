@@ -11,6 +11,11 @@
    - ***redCost***: Update the association matrix based on switched linkage of spots
    - ***closeLink***: Close gaps between short linkages to produce trajectories
    - ***trackConv***: Convert the format of the trajectory data tstructure for further processing
-3. ***
+3. ***TraceRefine.m*** and ***TraceRefine.fig***: The GUI for refining trajectories generated from the ***spotsLinking.m*** based on spot intensity and bright field image. 
+4. ***RegionCrop_unwrap.m*** and ***RegionCrop_unwrap.fig***: The GUI for rotating bacteria cells (rod-shaped) and estimate the diameter of the cells. Then unwrap the trajectories (supposed to be on the cell envelope) on a flat plane (real 1d). 
+5. ***RegionCrop_unwrap3D.m*** and ***RegionCrop_unwrap3D.fig***:The 3d version of ***RegionCrop_unwrap.m*** and ***RegionCrop_unwrap.fig***. The results from ThunderSTORM should have a third column with Z position. 
+   - ***TraceRotate.m*** and ***TraceRotate.fig*** The GUI used in the ***RegionCrop_unwrap3D.fig*** to rotate cell manually.
+6. ***TrackingMainscript.m***： The old m-file version of ***spotsLinking.m***. 
+
     
     
