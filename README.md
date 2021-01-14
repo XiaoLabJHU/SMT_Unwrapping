@@ -5,9 +5,11 @@ SMT_unwrapping contains the Matlab scripts for single-molecule tracking in bacte
 - The **cell rotation and unwrapping block** helps rotate individual cells and unwrap the cell envelope (it only applys to the rod shape cells now).
 - The **trajectory segmentation block** helps segment indivudual reajectoies to different states (it only distinguishs directional movement from confined diffusion ones now).
 - The **statisic calulation block** does simple statistics of the results with some plotting functions.
-
-#### Method has been used in: https://www.biorxiv.org/content/10.1101/850073v2, https://www.biorxiv.org/content/10.1101/857813v2
-
+## Request
   1. Require Matlab 2020a or newer for some functions in the GUI
   2. Molecules are identified and localized using imageJ plugin ThunderSTROM: https://github.com/zitmen/thunderstorm
   3. Bright field (or PhaseContrast) images of bacteria cells are required for estimation of the cell diameter.
+## Reference 
+Please cite the paper[Yang X, McQuillen R, Lyv Z, et al. FtsW exhibits distinct processive movements driven by either septal cell wall synthesis or FtsZ treadmilling in E. coli[J]. bioRxiv, 2019: 850073.] (https://www.biorxiv.org/content/10.1101/850073v2)
+
+
