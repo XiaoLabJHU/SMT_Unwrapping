@@ -68,6 +68,22 @@ The GUI will look like this with all selected traces marked in blue.
 
 ![figure9](docs/TraceRotate_Unwrap2.png)
 
+3. Click **Rotate Image** and type in an angle in degree (positive number is counter-clockwise while negative is clockwise rotation) to rotae the rod to the verticla direction. The Z-ring/Axis is on the horizontal direction.
+
+4. Click the **Select Center** and click the center of the septum as accurate as possible. The line scan of the bright field image will show up at the topright:
+
+![figure10](docs/TraceRotate_Unwrap3.png)
+
+5. The red line is the smoothed curve of the scanline. *Optional: **Choose Left Side Region** and **Choose RightSide Region** are tools for calculating the left and right side plateau of the bright field image. They are just for visulazition of the next step.*
+
+6. Click **Generate Unwrap Coords**. Click on the cross points of the red scanline and the left plateau first, then click the cross point on the right side. The GUI will plot the selected points on the line and also display them on the bright field image. Redo this if the selection looks not perfect.
+
+7. Click **Save the Structure**, the data will be saved and return to the main GUI.
+
+8. Reselect another cell to process and repeat 3-7 steps until all the trajectories are rotated. *Note: if one or more trajectories are not done well, left click the item in the region list and click **Delete trace** to remove it.
+
+9. Click **Save Data** to auto-save all the rotated trajectories companing with the cropped bright field images in the data structure. Click **Delete all** to clear the workspace before processing the next file.
+
 
 
 
