@@ -88,7 +88,7 @@ The GUI will look like this with all selected traces marked in blue.
 
 *Note: This simulation is for segmentation in the next step. The stationary molecules are supposed to the only other type of movement from directional movement.*
 
-1. Run the first section in ***statesSegP.m***:
+1. Run section0 of ***statesSegP.m***:
 ~~~
 clear; clc;
 Frame_L = [5:400]; % the range of the possible trajectory length
@@ -106,6 +106,24 @@ The parameters above are used in our study. User should change it according the 
 The data will be saved in ***filenameSimu*** used defined.
 
 ***Note: the simulation can be time consuming, you might need to prepare for an overnight (or even longer) computation. If you really need it to be fast, use a smaller sample size (N_traj = 100 or 200).***
+
+2. We recommend that use a strigent (small diffusion coefficient and small confined length) condition to do a first round simulation. Using these simulated trajectories to do the segmentation in Step 6 on a typical sample set and find all the 'stationary' segments. Then calculate the D, B. and L_err from the real data as in Step 7. If they show a big difference from the initial guess, use the experimental D, B, and L_err to re-simulate a set of trajctories for Step 6.
+
+### Step 6: Simulate a set of trjactories with confined diffusion (stationary) behavior.
+
+1. Run section1 of ***statesSegP.m***. Select all the trajectories files from Step 4 of the same condition and the script will calculate the intensity histograme of individual points of all trajectories. Click on any place in the figure to continue.
+
+![figure11](docs/Segment1.JPG)
+
+You need to input the intenisty threshold to filter out single points with intensity greater than the threshold.
+
+2. The script will continue to calculate the MSD curves in X-(short axis of the cell) and Y-(long axis of the cell). This step might take some time when the number of files is big. Click on any place in the figure to continue.
+
+![figure12](docs/Segment2.JPG)
+
+Type in the range of X- and Y- axis of the confinment. Use half of the plateau of X-MSD and the Y-MSD. *Note: This step is just to generate a visible indicator for the Step 7. The number is not very critical.*
+
+3. Save the refined and combined data structure to a user defined name. *Note: the code will also save the trajectories plotted with intensity and which data points are removed. This section take a while for writing the images.
 
 
 
