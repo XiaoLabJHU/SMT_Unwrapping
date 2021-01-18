@@ -1,8 +1,7 @@
 ## A step-by-step tutorial for 2d single tracking, unwarpping, segmentation, and post data-processing
 The purpose of the process is to flatten (unwrap) the rod-shape (cylinder part) cell envelope and register the coordinates from 2d-projection to the real position. Or covert the X<sub>detect</sub> to X<sub>real</sub> :
 
-<img src="docs/CylinderUnwrapping.jp" width="100" height="100">
-![figure1](docs/CylinderUnwrapping.jpg s=50)
+![figure1](docs/CylinderUnwrapping.jpg)
 
 ### Step 0: Prepare MATLAB for all the scripts
 Download all the scripts and add the directory to your MATLAB path.
@@ -11,14 +10,14 @@ Download all the scripts and add the directory to your MATLAB path.
 We recommend using [ThunderSTORM](https://github.com/zitmen/thunderstorm) that saves the results in the '.csv' format.
 An exmple of ThunderSTORM batch processing ImageJ macro script is included [here](/TrackingMainscript/FtsW-RFP-singleMoleculeLoc-Macro.txt).  Parameters for single molecule detection and localization in our paper are included in the same file. Users can use their own app or parameters to localize the spots as long as with the format as comma separeted CSV files:
 
-![figure2](docs/LocalizationFormat.jpg | width=200)
+![figure2](docs/LocalizationFormat.jpg)
 
 Multiple result files can be saved in the same folder for the next step.
 
 ### Step 2: Link localizations to produce single molecule trajectories.
 1. Run ***spotsLinking*** in MATLAB where a GUI will pop up:
 
-![figure3](/docs/SpotLinkingexample0.JPG | width=200)
+![figure3](/docs/SpotLinkingexample0.JPG)
    
 2. Set the **Spatial Threshold** to a reasonable number like 200-400 nm (one - two pixels). This number is the distance a spot could move between two frames (if your molecule is immobile, you can use smaller number). You can also choose this paramter iteratively by the diffusion coefficient calculated from the first round of data processing.
 
@@ -29,7 +28,7 @@ Multiple result files can be saved in the same folder for the next step.
 
 5.	Click the **Load Coordinate files** and select all the thunderstorm result files. This step might take a while and generate the histogram of the off-time or dark frame number between two localizations.
 
-![figure4](/docs/SpotLinkingexample1.JPG | width=200)
+![figure4](/docs/SpotLinkingexample1.JPG)
 
 6. Change the **Time Threshold** to a number as 2-3 times of the ***Mean LifeTime***. You can also use other reasonable threshold as long as you keep it the same across all files from the same experiment.
 
@@ -44,22 +43,30 @@ Multiple result files can be saved in the same folder for the next step.
 
 1. Run the ***TraceRefine*** in MATLAB. The GUI will pop up:
 
-![figure5](docs/TraceRefine1.JPG | width=200)
+![figure5](docs/TraceRefine1.JPG)
 
 **Change the Pixel size according to the optical setting before doing any following steps.**
 
 2. Click **Load BF/FL image** and **load trace** subsequentially to load the brightfield image and trajectory file from **Step 2**. The path of the file will be shown on the top-right region. The single molecule traces will be color-coded and overlaid on the left region of the GUI interface. The histogram will be displayed on the upper-right region.
 
-![figure6](docs/TraceRefine2.JPG | width=200)
+![figure6](docs/TraceRefine2.JPG)
 
 3. Drag the **Max** and **Min** bar to adjust the intensity thresholds and filter out trajectories with too high or too low fluorescence (unlikely to be single molecule signal). The mean and mode of the histogram are also displayed for the consideration of your threshold. ***Note: in our lab, we usually use (mode/2 <= intensity <= mode*3) as our thesholds***. Then click **Intensity Refine** to remove all the trajectories too bright or too dim. Click **Select ROI** and the GUI will ask you to draw polygons which enclose trajectories intersted. You will have chance to reselet in the middle of the process. *Note: If you clicked **Finish** by accidenct, you will have to Press **Select ROI** again to reselect all the trajectories*.
 The GUI will look like this with all selected traces marked in blue.
 
-![figure7](docs/TraceRefine3.JPG | width=200)
+![figure7](docs/TraceRefine3.JPG)
 
+4. Click **Save Selected Traces** to save the chosen trajectories. Click **Save image** to save the current GUI interface.
 
+### Step 4: Rotated individual cell and unwrap the trajectoies.
 
+1. Run **RegionCrop_unwrap** and the GUI should pop up. Adjust the pixel size if needed. Then click **Load BF** and **Load Traj**. Change the **Date** and it will be affiliated with the Data structure.
 
+![figure8](docs/TraceRotate_Unwrap1.png)
+
+2. Crop a region containing the  interesed single cell with empty space surrounded by clicking on the lefttop and rightbottom points. The code will pop up a new GUI: 
+
+![figure9](docs/TraceRotate_Unwrap2.png)
 
 
 
