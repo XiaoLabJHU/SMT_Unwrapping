@@ -32,11 +32,26 @@ Multiple result files can be saved in the same folder for the next step.
 
 6. Change the ‘Time Threshold’ to a number as 2-3 times of the ***Mean LifeTime***. You can also use other reasonable threshold as long as you keep it the same across all files from the same experiment.
 
-7.	Set the ‘Minimal Trace length’ to a proper number which determines the shortest trajectory length. *Note: The code will save all the trajectories and the trajectories longer than this number in two set of files. You can use either one or do further processing.*
+7.	Set the ‘Minimal Trace length’ to a proper number which determines the shortest trajectory length (10 frames were used in our paper). *Note: The code will save all the trajectories and the trajectories longer than this number in two set of files. You can use either one or do further processing.*
 
 8.	Click ‘Link the spots and Save file’, the GUI will use the parameters on the panel to link all the files loaded and save trajectories from each file in a new file. The localizations will be saved in a .mat format named as 'Coord-XXX.mat'. The linked trajecoties will be saved in .mat files named as 'Long-XXX.mat'.
 
 9.	If you have data in multiple folders, you can process each folder first, and click ‘Combine files’ to combine those data structures to one. *Note: you could also combine the data by the end while post-processing).*
+
+### Step 3: Filter out bad trajectories.
+*There are trajetories unwanted such as backgournd noise (not in cells), molecules in other part of the cells (not interested), or multi-molecule aggregations (high intenisty) which we should remove from the final speed/diffusion calculation.*
+
+1. Run the ‘TraceRefine’ in MATLAB. The GUI will pop up:
+
+![figure5](docs/TraceRefine1.JPG)
+
+![figure6](docs/TraceRefine2.JPG)
+
+![figure7](docs/TraceRefine3.JPG)
+Select the load BF/FL image and trace structure of same region.
+	* make sure change the pixel size as experiment 
+	* If you are going to unwrap the cells, I prefer only using the cells without companion side by side so the segmentation can work
+
 
 
 
