@@ -66,13 +66,13 @@ The GUI will look like this with all selected traces marked in blue.
 
 2. Crop a region containing the  interesed single cell with empty space surrounded by clicking on the lefttop and rightbottom points. The code will pop up a new GUI: 
 
-![figure9](docs/TraceRotate_Unwrap2.png)
+![figure9](docs/TraceRotate_Unwrap2.jpg)
 
 3. Click **Rotate Image** and type in an angle in degree (positive number is counter-clockwise while negative is clockwise rotation) to rotae the rod to the verticla direction. The Z-ring/Axis is on the horizontal direction.
 
 4. Click the **Select Center** and click the center of the septum as accurate as possible. The line scan of the bright field image will show up at the topright:
 
-![figure10](docs/TraceRotate_Unwrap3.png)
+![figure10](docs/TraceRotate_Unwrap3.jpg)
 
 5. The red line is the smoothed curve of the scanline. *Optional: **Choose Left Side Region** and **Choose RightSide Region** are tools for calculating the left and right side plateau of the bright field image. They are just for visulazition of the next step.*
 
