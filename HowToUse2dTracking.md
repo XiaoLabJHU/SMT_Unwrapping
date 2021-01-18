@@ -26,6 +26,21 @@ Multiple result files can be saved in the same folder for the next step.
 4.	Set the ‘Weight of Z’ to 0 in 2d tracking module.
 *Note: there is a ‘Weight of Intensity’ button not in use by now. You could also modify this in the linking code yourself.*
 
+5.	Click the ‘Load Coordinate files’ button and select all the thunderstorm result files. This step might take a while and generate the histogram of the off-time or dark frame number between two localizations.
+
+![figure4](/docs/SpotLinkingexample1.JPG)
+
+6. Change the ‘Time Threshold’ to a number as 2-3 times of the ***Mean LifeTime***. You can also use other reasonable threshold as long as you keep it the same across all files from the same experiment.
+
+7.	Set the ‘Minimal Trace length’ to a proper number which determines the shortest trajectory length. *Note: The code will save all the trajectories and the trajectories longer than this number in two set of files. You can use either one or do further processing.*
+
+8.	Click ‘Link the spots and Save file’, the GUI will use the parameters on the panel to link all the files loaded and save trajectories from each file in a new file. The localizations will be saved in a .mat format named as 'Coord-XXX.mat'. The linked trajecoties will be saved in .mat files named as 'Long-XXX.mat'.
+
+9.	If you have data in multiple folders, you can process each folder first, and click ‘Combine files’ to combine those data structures to one. *Note: you could also combine the data by the end while post-processing).*
+
+
+
+
 
 
 
