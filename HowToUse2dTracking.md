@@ -82,7 +82,31 @@ The GUI will look like this with all selected traces marked in blue.
 
 8. Reselect another cell to process and repeat 3-7 steps until all the trajectories are rotated. *Note: if one or more trajectories are not done well, left click the item in the region list and click **Delete trace** to remove it.
 
-9. Click **Save Data** to auto-save all the rotated trajectories companing with the cropped bright field images in the data structure. Click **Delete all** to clear the workspace before processing the next file.
+9. Click **Save Data** to auto-save all the rotated trajectories companing with the cropped bright field images in the data structure. Click **Delete all** to clear the workspace before processing the next file. The data structure should be named as 'XXX-TraceInfo-XXX.mat'.
+
+### Step 5: Simulate a set of trjactories with confined diffusion (stationary) behavior.
+
+*Note: This simulation is for segmentation in the next step. The stationary molecules are supposed to the only other type of movement from directional movement.*
+
+1. Run the first section in ***statesSegP.m***:
+~~~
+clear; clc;
+Frame_L = [5:400]; % the range of the possible trajectory length
+ExpT = 1; % the exposure time (if there is dark interval, this should be total time interval)
+D = 0.0005; % diffusion coefficient: in um^2/s
+B = 100; % boundary size  in nm
+L_err = 30; % localization error in nm
+N_traj = 2000; % number of trajectories for simulation in one condition
+filenameSimu = 'FileName.mat'; % filename to save the simulation result
+% simulation
+[R_struc,Traj_struc,TimeMatrix,frameMatrix,SpeedMatrix] = rcdfCal(Frame_L,0,ExpT,D,B,L_err,N_traj);
+save(filenameSimu,'R_struc','Traj_struc','TimeMatrix','frameMatrix','SpeedMatrix','Frame_L');
+~~~
+The parameters above are used in our study. User should change it according the experimental conditions.
+The data will be saved in ***filenameSimu*** used defined.
+
+***Note: the simulation can be time consuming, you might need to prepare for an overnight (or even longer) computation. If you really need it to be fast, use a smaller sample size (N_traj = 100 or 200).***
+
 
 
 
