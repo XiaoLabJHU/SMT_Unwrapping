@@ -31,6 +31,8 @@ for ii = 1 : length(filename)
                 switch Experiment
                     case 'Nanopillar'
                         Dtrace(:,2:3) = Track(kk).XYCoord(:,1:2);
+                    case '2D_Tracking'
+                        Dtrace(:,2:3) = Track(kk).XYCoord(:,1:2);
                     otherwise
                         Dtrace(:,2:3) = Track(kk).XYZCoord(:,3:4);% only get the coordinates from average radius
                 end
@@ -131,7 +133,7 @@ for ii = 1 : length(filename)
                     case 'Nanopillar'
                         Trace(:,2) = Track(kk).thetas_peeled-mean(Track(kk).thetas_peeled);
                     case '2D_Tracking'
-                        Trace(:,2:3) = Track(kk).XYZCoord(:,3:4);
+                        Trace(:,2:3) = Track(kk).XYCoord(:,1:2);
                     case '3D_Tracking'
                         Trace(:,2:4) = [Track(kk).XYCoord(:,3:4),Track(kk).XYCoord(:,3)-mean(Track(kk).XYCoord(:,3))];
                         TraceX_All = [TraceX_All; Track(kk).XYCoord(:,3)-mean(Track(kk).XYCoord(:,3))*PixelS];
