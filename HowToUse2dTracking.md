@@ -113,6 +113,8 @@ The data will be saved in ***filenameSimu*** used defined.
 
 1. Run section1 of ***statesSegP.m***. Select all the trajectories files from Step 4 of the same condition and the script will calculate the intensity histograme of individual points of all trajectories. Click on any place in the figure to continue.
 
+Make sure to set ~Experiment = '2D_Tracking'; ~
+
 ![figure11](docs/Segment1.JPG)
 
 You need to input the intenisty threshold to filter out single points with intensity greater than the threshold.
@@ -123,9 +125,28 @@ You need to input the intenisty threshold to filter out single points with inten
 
 Type in the range of X- and Y- axis of the confinment. Use half of the plateau of X-MSD and the Y-MSD. *Note: This step is just to generate a visible indicator for the Step 7. The number is not very critical.*
 
-3. Save the refined and combined data structure to a user defined name. *Note: the code will also save the trajectories plotted with intensity and which data points are removed. This section take a while for writing the images.
+3. Save the refined and combined data structure to a user defined name. *Note: the code will also save the trajectories plotted with intensity and which data points are removed. This section take a while for writing the images.*
 
+### Step 7: Segment every trajectories.
 
+1. Run Section2 of ***statesSegP.m***. Make sure to set the parameters below according to the experimental conditions.
+
+~~~
+Input_Params.Experiment = '2D_Tracking'; 
+Input_Params.PixelS = 100; % pixel size in nm
+Input_Params.ExpT = 1; % time interval in second
+Input_Params.TimeRange = [-10,400]; % the time range for trajectory ploting in sec ,better to have some space on both side
+Input_Params.PosiXRang = [-500,500]; % the position range of short axis for plotting in nm
+Input_Params.PosiYRang = [-200,200]; % the position range of short axis for plotting in nm
+Input_Params.Nboot = 100; % number of the bootstrapping to get linear fitting
+Input_Params.Pdrop = 0.1; %dropout probability in bootstrapping e.g.0.1 means remove 10% of the points in each segment for Bootstrapping
+~~~
+
+The code will ask you to select the simulation dataset from Step 5 and the experimental dataset from Step 6. After this step, you should find a variable in work space named as ***IndTrack*** which contains all the information of each trajctory. The length of ***IndTrack*** is the number of trajectories. 
+
+#### DO NOT CLEAR your workspace from now on until finish the next step.
+
+2. Change the ***Index*** from 1 to the length of ***IndTrack***. Everytime, run section3 of ***statesSegP.m***
 
 
 
