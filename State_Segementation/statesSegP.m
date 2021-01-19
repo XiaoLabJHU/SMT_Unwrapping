@@ -40,8 +40,8 @@ clear; clc;
     % '3D_Tracking' for 3D SMT
     % 'Nanopillar' for Nanopillar experiment
 Experiment = '2D_Tracking'; 
-ExpT = 1; % timeinterval in second
-PixelS = 100; % pixel size in nm
+ExpT = 0.5; % timeinterval in second
+PixelS = 81.25; % pixel size in nm
 ThreshT = 10; % the threshold of trajectory length. Only select the trajectories longer than this
 [filenameIn pathname] = uigetfile('.mat','input the unwrapped trajectory files','multiselect','on');
 
@@ -63,7 +63,7 @@ display(['There are ' num2str(length(file_check.IndTrack)) ' trajectories in the
 Input_Params.Experiment = '2D_Tracking'; 
 
 % set up some parameter2
-Input_Params.PixelS = 100; % pixel size in nm
+Input_Params.PixelS = 81.25; % pixel size in nm
 Input_Params.ExpT = 1; % time interval in second
 Input_Params.TimeRange = [-10,400]; % the time range for trajectory ploting in sec ,better to have some space on both side
 Input_Params.PosiXRang = [-500,500]; % the position range of short axis for plotting in nm
@@ -83,6 +83,6 @@ Input_Params.Simul_strucs = load([pathnameSimu filenameSimu]);
 %                 b. [V, DisplXb, StDXb, RatioXb, NXb] = tracedropout(TimeT_TXY,TraceTx,Nboot,Pdrop)
 %                 c. [R_V,R_0,Traj_V,Traj_0] = addVoneFLtrajs(Traj_struc,R_struc,Frame_L,frameL,TimeMatrix,V)
 %                 d. Prob = getProbR(R_sample,Bin,epsl)
-Index = 671 % change this line from 1 to the max index of trajectories
+Index = 9% change this line from 1 to the max index of trajectories
 
 Segment_Trajectories(Index,filename,pathname,Input_Params);
