@@ -157,9 +157,27 @@ The code will ask you to select the simulation dataset from Step 5 and the exper
    * Then the trajectory along the short axis will displays on the upper right region. Click on the possible start and end position of a segment with distinctive movement mode. The linear fit will display on top of the trajectory, the probability distribution from bootstrapping is shown on the bottom left region. You can check the probability of the segment to be directional or not. (The smaller R is, and greater P-progress is, it is more likely to be directional movement.). It is good to iteratively re-segment the same trajctory (Training you own neuron net:).
    
    
+### Step 8: Post-processing: classify the directional and stationary population, calculate the speed, diffusion property, and dwell time.
 
+1. Classify the segments and get the speed and dwell time for directional and stationary segments: Open ***DwellSpeedCalc.m*** and adjust the parameters for segmentation and plotting:
+~~~
+Nbin = 31;   % The number of bins to plot speed distribution in log-scale
+LowB = -1.5; % The Lower bound of plotting speed distribution in log-scale 10<sup>LowB</sup>
+HighB = 3;   % The upper bound of plotting speed distribution in log-scale 10<sup>HighB</sup>
+Rmax1 = 0.45; % maximum R value for directional movement
+Rmax2 = 0.2; % R for long directional segments which might have samller P
+StDmax = 80; % The boundary of standard deviation to justify stationary phase.
+Pmin = 0.75; % minimum probability for directional movement.
+Nb = 1000; % bootstrapping number to get statistic of the population fraction
+~~~
 
+Run the script and select the segemented results from Step 7. The classification result, speed distribution, and dwell time distribution will be plot in a new figure:
 
+![figure13](docs/PostProcess1.JPG)
+
+Save the data structure to user defined name.
+
+2. Fit speed distribution in ***cdfBootFitting.m*** or customized code.
 
 
 
