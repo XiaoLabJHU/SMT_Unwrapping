@@ -144,10 +144,19 @@ Input_Params.Pdrop = 0.1; %dropout probability in bootstrapping e.g.0.1 means re
 
 The code will ask you to select the simulation dataset from Step 5 and the experimental dataset from Step 6. After this step, you should find a variable in work space named as ***IndTrack*** which contains all the information of each trajctory. The length of ***IndTrack*** is the number of trajectories. 
 
-#### DO NOT CLEAR your workspace from now on until finish the next step.
 
-2. Change the ***Index*** from 1 to the length of ***IndTrack***. Everytime, run section3 of ***statesSegP.m***
+2. Change the ***Index*** from 1 to the length of ***IndTrack***. Everytime, run section3 of ***statesSegP.m***. The GUI will pop up, and you can segment the trajectory one state by one state:
 
+![figure12](docs/Segment3.JPG)
+
+   * The cell and trajectory is plot on the up-left side for visualization.
+   * The position of the molecule on the long axis against time is plot on the bottom right. First select the part of the trajectory located to the septum (or a position of interest) by click **Okay** in the popped-up box and click two end of the region you want to choose. If the whole trajectory is somewhat localized in the region, clcik ** Useall**, the code will use all the positions to calculate. If the trajectory is completely off center, you can use **Bad Trajectory** to quit and do the next one.
+   
+   ![figure13](docs/Segment4.JPG)
+   
+   * Then the trajectory along the short axis will displays on the upper right region. Click on the possible start and end position of a segment with distinctive movement mode. The linear fit will display on top of the trajectory, the probability distribution from bootstrapping is shown on the bottom left region. You can check the probability of the segment to be directional or not. (The smaller R is, and greater P-progress is, it is more likely to be directional movement.). It is good to iteratively re-segment the same trajctory (Training you own neuron net:).
+   
+   
 
 
 
