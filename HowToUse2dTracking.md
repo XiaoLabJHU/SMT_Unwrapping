@@ -51,7 +51,7 @@ Multiple result files can be saved in the same folder for the next step.
 
 ![figure6](docs/TraceRefine2.JPG)
 
-3. Drag the **Max** and **Min** bar to adjust the intensity thresholds and filter out trajectories with too high or too low fluorescence (unlikely to be single molecule signal). The mean and mode of the histogram are also displayed for the consideration of your threshold. ***Note: in our lab, we usually use (mode/2 <= intensity <= mode*3) as our thesholds***. Then click **Intensity Refine** to remove all the trajectories too bright or too dim. Click **Select ROI** and the GUI will ask you to draw polygons which enclose trajectories intersted. You will have chance to reselet in the middle of the process. *Note: If you clicked **Finish** by accidenct, you will have to Press **Select ROI** again to reselect all the trajectories*.
+3. Drag the **Max** and **Min** bar to adjust the intensity thresholds and filter out trajectories with too high or too low fluorescence (unlikely to be single molecule signal). The mean and peak of the histogram are also displayed for the consideration of your threshold. ***Note: in our lab, we usually use (peak/2 <= intensity <= peak*3) as our thesholds***. Then click **Intensity Refine** to remove all the trajectories too bright or too dim. Click **Select ROI** and the GUI will ask you to draw polygons which enclose trajectories intersted. You will have chance to reselet in the middle of the process. *Note: If you clicked **Finish** by accidenct, you will have to Press **Select ROI** again to reselect all the trajectories*.
 The GUI will look like this with all selected traces marked in blue.
 
 ![figure7](docs/TraceRefine3.JPG)
