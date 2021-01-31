@@ -16,6 +16,6 @@ SMT_unwrapping contains the Matlab scripts for single-molecule tracking in bacte
   2. To process data from 2d single-molecule tracking in nanopilars, please find the the step-by-step manual in [Alink]().
   3. To process data from 3d single-molecule tracking, please find the the step-by-step manual in [Alink]().
 ## Reference 
-Please cite this paper [Yang X, McQuillen R, Lyv Z, et al. FtsW exhibits distinct processive movements driven by either septal cell wall synthesis or FtsZ treadmilling in E. coli. bioRxiv, 2019: 850073.](https://www.biorxiv.org/content/10.1101/850073v2)
+Please cite this paper [Yang, Xinxing, et al. "A two-track model for the spatiotemporal coordination of bacterial septal cell wall synthesis revealed by single-molecule imaging of FtsW." Nature Microbiology (2021): 1-10.](https://www.nature.com/articles/s41564-020-00853-0)
 
 
