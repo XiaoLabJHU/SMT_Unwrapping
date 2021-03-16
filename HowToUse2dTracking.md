@@ -109,7 +109,7 @@ The data will be saved in ***filenameSimu*** used defined.
 
 2. We recommend that use a strigent (small diffusion coefficient and small confined length) condition to do a first round simulation. Using these simulated trajectories to do the segmentation in Step 6 on a typical sample set and find all the 'stationary' segments. Then calculate the D, B. and L_err from the real data as in Step 7. If they show a big difference from the initial guess, use the experimental D, B, and L_err to re-simulate a set of trajctories for Step 6.
 
-### Step 6: Simulate a set of trjactories with confined diffusion (stationary) behavior.
+### Step 6: Set some parameters required for the segmentation (based on experiment data).
 
 1. Run section1 of ***statesSegP.m***. Select all the trajectories files from Step 4 of the same condition and the script will calculate the intensity histograme of individual points of all trajectories. Click on any place in the figure to continue.
 
