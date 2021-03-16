@@ -325,8 +325,13 @@ axes(handles.image);
 hold off
 imshow(handles.ImBF,[]);
 hold on
-scatter(Track_Center(:,1),Track_Center(:,2),5,'r');
-
+%scatter(Track_Center(:,1),Track_Center(:,2),5,'r');
+for idxT=1:length(Tracksnew)
+    % load the current frame info
+    Track = Tracksnew(idxT).Coordinates;
+    % plot all the traces
+    plot(Track(:,2),Track(:,3),'-.' , 'LineWidth',3,'MarkerSize',5);
+end
 %
 response=questdlg('Left click get each vertex, double click on the first vertex to complete one ROI', ...
                   'Select the ROI you want', 'Select' , 'Finished','Finished');
