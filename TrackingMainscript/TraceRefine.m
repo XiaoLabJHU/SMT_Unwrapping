@@ -408,6 +408,11 @@ eval([varname '.Tracksource=handles.Tracksource;']);
 eval([varname '.TracksALL=handles.Tracksnew;']);
 save([pathname filename],varname);
 
+% save the ROI image
+filenameI = ['Select-' filename(1:find(filename == '.')-1) '.tif'];
+% [filename pathname]=uiputfile('*.tif','save current figure');
+saveas(gcf,[pathname filenameI],'tif');
+
 
 % --- Executes on button press in Show_trace.
 function Show_trace_Callback(hObject, eventdata, handles)
