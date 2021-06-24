@@ -8,10 +8,10 @@ function Fit_to_a_Circle(filenameIN, TRpathname, BFfilename, BFpathname, GFPfile
     % convert single file selection
     
     % convert single file selection
-    if ~iscell(filenameIn)
-        TRfilename{1} = filenameIn;
+    if ~iscell(filenameIN)
+        TRfilename{1} = filenameIN;
     else
-        TRfilename = filenameIn;
+        TRfilename = filenameIN;
     end
     
     for idxa = 1:length(TRfilename);

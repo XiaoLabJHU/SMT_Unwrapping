@@ -1,4 +1,4 @@
-function Align_Brightfield_Images(files,tform_2C,varargin)
+function Align_Brightfield_Images(files,tform_2C,varargin);
 for qq = 1:length(files);
     file_curr = files(qq).name;
     file_root = file_curr(1:find(file_curr=='.')-1);

@@ -1,4 +1,5 @@
 function crop_files(files,BF_Channel);
+    load('Channel_Crop.mat');
     f = waitbar(0,'Please wait...');
     WBpos = get(f,'Position');
     for qq = 1:length(files);
