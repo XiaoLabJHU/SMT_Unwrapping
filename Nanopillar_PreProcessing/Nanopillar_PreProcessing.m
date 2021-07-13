@@ -48,15 +48,29 @@ load('Bead_Alignment.mat');
 Align_Brightfield_Images(files_BF,tform_2C);
 Align_GFP_Images(files_488,tform_2C);
 
+%Prior to Section 5 below run traceRefine. however, only one trajectotry per
+%field can be saved per traceRefine file: So if you have more than one 
+%trajectory per field, name them like "TR-01R1.mat" and "TR-01R2.mat."
+
 
 %% Section 5. Fit the ZapA-GFP ring to a circle. Do this after TraceRefine.
 %REQUIRES PLUGINS: 'FREEZECOLORS' AND 'CIRCLE FIT (PRATT METHOD)'
 clear;
 clc;
 
+%Below you will select the Trace refine files in formate TR-01.mat (note
+%not all fields must have a TR file). In addtion you will select BF and
+%denoised GFP aligned files. Note, while you can have sparse TR files, you
+%must include ALL BF and denoised files (for example 13 TR files are good but all 30 BF and
+%all 30 denoised files must be uploaded)
+
 [TRfilename TRpathname] = uigetfile('.mat', 'Select the TraceRefine files','multiselect','on');
 [BFfilename BFpathname] = uigetfile('.tif','Select ALL BF files','multiselect','on');
 [GFPfilename, GFPpathname] = uigetfile('.tif','Select ALL GFP files','multiselect','on');
 
+
+%% Section 6.
+
 % Custom script to fit a circle.
 Fit_to_a_Circle(TRfilename, TRpathname, BFfilename, BFpathname, GFPfilename, GFPpathname);
+
