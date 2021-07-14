@@ -54,7 +54,7 @@ function TraceRefine_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for TraceRefine
 handles.output = hObject;
-handles.pxSize = 160;
+handles.pxSize = 100;
 % Update handles structure
 guidata(hObject, handles);
 
