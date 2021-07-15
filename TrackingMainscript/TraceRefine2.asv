@@ -84,6 +84,8 @@ handles.BF_dir = uigetdir(handles.datafolder, 'Choose brightfield image folder')
 handles.DT_dir = uigetdir(handles.datafolder, 'Choose drift image folder');
 handles.trace_dir = uigetdir(handles.datafolder, 'Choose trajectory folder');
 
+handles.out_dir = uigetdir(handles.datafolder, 'Choose output folder');
+
 cd(handles.BF_dir);
 handles.BF_imgs = dir('*.tif');
 cd(handles.DT_dir);
@@ -102,6 +104,7 @@ set(handles.idx_slider, 'SliderStep', sliderStep);
 set(handles.idx_box, 'Value', 1);
 
 drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
+Load_trace_Callback(handles.Load_trace, eventdata, handles);
 
 % load and save the image name and pathname/filename 
 % pxSize = handles.pxSize;
@@ -133,14 +136,18 @@ function Load_trace_Callback(hObject, eventdata, handles)
 % load the structure of traces
 pxSize = handles.pxSize;
 %[filename pathname]=uigetfile('*.mat','input the trace struucture from u-tracker');
+val = str2double(get(handles.idx_box,'String'));
+
 cd(handles.trace_dir);
 handles.traces = dir('*.mat');
+handles.trace_name = handles.traces(val).name;
+COOR = load(handles.trace_name);
 
 %load([pathname filename]);
-load([pathname filename]);
-handles.Tracksource=[pathname filename];
-handles.trackFinal=tracksFinal;
 
+%handles.Tracksource=[pathname filename];
+handles.trackFinal= COOR.tracksFinal;
+drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
 % reconstruction the structure of tracks
 % if isfield(handles, 'ImBF')
 %     axes(handles.image);
@@ -152,9 +159,9 @@ handles.trackFinal=tracksFinal;
 % end
 %     Intens = [];
 
-for idxT=1:length(tracksFinal)
+for idxT=1:length(COOR.tracksFinal)
     % load the current frame info
-    Track = tracksFinal(idxT).Coord;
+    Track = COOR.tracksFinal(idxT).Coord;
     % rescale the unit
     Track(:,2:4) = Track(:,2:4)/pxSize;
     Tracksnew(idxT).Coordinates = Track; 
@@ -190,7 +197,7 @@ set(handles.Mean_value,'string',Mean_value);
 Pidx=find((HistI(:,2)==max(HistI(:,2))));
 Peak_value=HistI(Pidx,1);
 set(handles.Peak_value,'string',Peak_value);
-set(handles.BF_name,'String',[pathname filename]);
+%set(handles.BF_name,'String',[pathname filename]);
 % save the data
 guidata(hObject, handles);    
 
@@ -353,10 +360,14 @@ for idx=1:length(handles.TracksSelect)
 end
 handles.Track_Center=Track_Center;
 % update the image using the center of the tracks
-axes(handles.image);
-hold off
-imshow(handles.ImBF,[]);
-hold on
+%axes(handles.image);
+%hold off
+%imshow(handles.ImBF,[]);
+%hold on
+
+drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
+Load_trace_Callback(handles.Load_trace, eventdata, handles);
+
 %scatter(Track_Center(:,1),Track_Center(:,2),5,'r');
 for idxT=1:length(Tracksnew)
     % load the current frame info
@@ -433,7 +444,15 @@ if ~isfield(handles,'TracksROI')
     errordlg('Please select first','Nothing to save');
     return;
 end
-[filename pathname]=uiputfile('.mat','save the selected traces');
+%[filename pathname]=uiputfile('.mat','save the selected traces');
+
+tag = handles.BF_name.String(end-5:end-4);
+disp(tag);
+filename = ['RfTr_' tag];
+disp(filename);
+
+pathname = handles.out_dir;
+
 varname=['tracksRefine'];%filename(1:find(filename=='.')-1);
 eval([varname '=[];']);
 eval([varname '.Area = handles.Area;']);
@@ -441,15 +460,14 @@ eval([varname '.region=handles.region;']);
 eval([varname '.TracksROI=handles.TracksROI;']);
 BFsource=[handles.BFpath handles.BFfile];
 eval([varname '.BFsource=BFsource;']);
-eval([varname '.Tracksource=handles.Tracksource;']);
+%eval([varname '.Tracksource=handles.Tracksource;']);
 eval([varname '.TracksALL=handles.Tracksnew;']);
-save([pathname filename],varname);
+save([pathname '\' filename],varname);
 
 % save the ROI image
 filenameI = ['Select-' filename(1:find(filename == '.')-1) '.tif'];
 % [filename pathname]=uiputfile('*.tif','save current figure');
 saveas(gcf,[pathname filenameI],'tif');
-
 
 % --- Executes on button press in Show_trace.
 function Show_trace_Callback(hObject, eventdata, handles)
@@ -529,6 +547,7 @@ hObject.Value=val;
 set(handles.idx_box,'String',num2str(val));
 
 drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
+Load_trace_Callback(handles.Load_trace, eventdata, handles);
 
 guidata(hObject, handles);
 
@@ -560,7 +579,6 @@ function drift_toggle_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of drift_toggle
 show_drift = get(hObject, 'Value');
 val = str2double(get(handles.idx_box,'String'));
-disp(val);
 if show_drift
     cd(handles.DT_dir);
     %handles.DT_name = handles.drift_imgs(val).name;
@@ -575,12 +593,14 @@ end
 IMG = imread(img_name, 'tif');
 axes(handles.image);
 imshow(IMG,[]);
+hold all
 
 set(handles.BF_name,'String', img_name);
 % save variable 
 handles.ImBF=IMG;
 handles.BFpath=pwd;
 handles.BFfile=img_name;
+guidata(hObject, handles);
 
 
 
@@ -595,6 +615,8 @@ val = str2double(get(hObject,'String'));
 set(handles.idx_slider, 'Value', val);
 
 drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
+Load_trace_Callback(handles.Load_trace, eventdata, handles);
+
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.

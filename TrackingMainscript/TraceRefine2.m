@@ -82,7 +82,9 @@ function Load_BF_Callback(hObject, eventdata, handles)
 handles.datafolder = uigetdir([],'Choose main data folder');
 handles.BF_dir = uigetdir(handles.datafolder, 'Choose brightfield image folder');
 handles.DT_dir = uigetdir(handles.datafolder, 'Choose drift image folder');
-handles.trace_dir = uigetdir(handles.datafolder, 'Choose trajectory folder');
+handles.trace_dir = uigetdir(handles.datafolder, 'Choose raw trajectories folder');
+
+handles.out_dir = uigetdir(handles.datafolder, 'Choose output folder');
 
 cd(handles.BF_dir);
 handles.BF_imgs = dir('*.tif');
@@ -145,7 +147,8 @@ COOR = load(handles.trace_name);
 
 %handles.Tracksource=[pathname filename];
 handles.trackFinal= COOR.tracksFinal;
-drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
+
+%drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
 % reconstruction the structure of tracks
 % if isfield(handles, 'ImBF')
 %     axes(handles.image);
@@ -350,6 +353,12 @@ errordlg('Please load the traces and do the intensity refine first!','Input Erro
 return;
 end
 Tracksnew=handles.Tracksnew;
+
+%refresh the image
+drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
+Load_trace_Callback(handles.Load_trace, eventdata, handles);
+
+
 % caluclate the center of every trace(x and y plane), Z won't be considered
 for idx=1:length(handles.TracksSelect)
     Mean_position=mean(handles.TracksSelect(idx).Coordinates,1);
@@ -357,11 +366,13 @@ for idx=1:length(handles.TracksSelect)
     Track_Center(idx,3)=handles.TracksSelect(idx).Index;
 end
 handles.Track_Center=Track_Center;
+
 % update the image using the center of the tracks
 axes(handles.image);
 hold off
 imshow(handles.ImBF,[]);
 hold on
+
 %scatter(Track_Center(:,1),Track_Center(:,2),5,'r');
 for idxT=1:length(Tracksnew)
     % load the current frame info
@@ -438,7 +449,15 @@ if ~isfield(handles,'TracksROI')
     errordlg('Please select first','Nothing to save');
     return;
 end
-[filename pathname]=uiputfile('.mat','save the selected traces');
+%[filename pathname]=uiputfile('.mat','save the selected traces');
+
+tag = handles.BF_name.String(end-5:end-4);
+disp(tag);
+filename = ['RfTr_' tag];
+disp(filename);
+
+pathname = handles.out_dir;
+
 varname=['tracksRefine'];%filename(1:find(filename=='.')-1);
 eval([varname '=[];']);
 eval([varname '.Area = handles.Area;']);
@@ -448,14 +467,13 @@ BFsource=[handles.BFpath handles.BFfile];
 eval([varname '.BFsource=BFsource;']);
 %eval([varname '.Tracksource=handles.Tracksource;']);
 eval([varname '.TracksALL=handles.Tracksnew;']);
-save([pathname filename],varname);
+save([pathname '\' filename],varname);
 
 % save the ROI image
 filenameI = ['Select-' filename(1:find(filename == '.')-1) '.tif'];
 % [filename pathname]=uiputfile('*.tif','save current figure');
 saveas(gcf,[pathname filenameI],'tif');
 
-?>???
 % --- Executes on button press in Show_trace.
 function Show_trace_Callback(hObject, eventdata, handles)
 % hObject    handle to Show_trace (see GCBO)
