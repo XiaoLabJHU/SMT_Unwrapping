@@ -5,10 +5,12 @@ cd(BF_folder);
 BF_imgs = dir('*.tif');
 cd(drift_folder);
 drift_imgs = dir('*.tif');
+num_imgs = length(handles.BF_imgs);
 
-for i = 1:60
-cd(BF_folder);
-BF_name = BF_imgs(i).name;
+for i = 1:num_imgs
+%cd(BF_folder);
+%BF_name = BF_imgs(i).name;
+BF_path = [BF_folder]
 BF = imread(BF_name, 'tif');
 %tag = extractBefore(BF_name, '.');
 %tag = extractAfter(tag,);
