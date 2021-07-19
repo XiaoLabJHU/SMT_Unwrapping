@@ -57,15 +57,23 @@ DFT_name = handles.DFT_files(i).name;
 handles.DFT_path = [handles.DFT_dir '\' DFT_name];
 handles.DFT_img = imread(handles.DFT_path, 'tif');
 
-%disp(BF_tag);
-
 COOR_name = handles.COOR_files(i).name;
 handles.COOR_path = [handles.COOR_dir '\' COOR_name];
 handles.COOR = load(handles.COOR_path);
+
+set(handles.saved_text,'String', handles.OUT_paths(i));
+
+%Clear tracks from previous image
+
+if isfield(handles,'TracksSelect')
+    handles = rmfield(handles,'TracksSelect');
+end
+if isfield(handles,'TracksROI')
+    handles = rmfield(handles,'TracksROI');
+end
+
 % Update handles structure
 guidata(self, handles);
-%out = handles;
-%guidata(hObject, handles);
 
 function refresh_plot(self, handles)
 hold off
@@ -175,15 +183,16 @@ function Load_BF_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-%handles.ROOT_dir = uigetdir([],'Choose main data folder');
-handles.ROOT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT';
-%handles.BF_dir = uigetdir(handles.ROOT_dir, 'Choose brightfield image folder');
-handles.BF_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\BF';
-%handles.DFT_dir = uigetdir(handles.ROOT_dir, 'Choose drift image folder');
-handles.DFT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\drift';
-% handles.COOR_dir = uigetdir(handles.ROOT_dir, 'Choose unrefined tracjectory folder');
-handles.COOR_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\long_coords';
-handles.OUT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\refined_traj';
+handles.ROOT_dir = uigetdir([],'Choose main data folder');
+%handles.ROOT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT';
+handles.BF_dir = uigetdir(handles.ROOT_dir, 'Choose brightfield image folder');
+%handles.BF_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\BF';
+handles.DFT_dir = uigetdir(handles.ROOT_dir, 'Choose drift image folder');
+%handles.DFT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\drift';
+handles.COOR_dir = uigetdir(handles.ROOT_dir, 'Choose unrefined tracjectory folder');
+% handles.COOR_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\long_coords';
+handles.OUT_dir = uigetdir(handles.ROOT_dir, 'Choose refined tracjectory (output) folder');
+% handles.OUT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\refined_traj';
 cd(handles.BF_dir);
 handles.BF_files = dir('*.tif');
 cd(handles.DFT_dir);
@@ -194,6 +203,7 @@ cd(handles.ROOT_dir);
 
 %conditional
 handles.num_imgs = length(handles.BF_files);
+handles.OUT_paths = strings(1, handles.num_imgs);
 
 %set(hObject, 'min', 1);
 set(handles.idx_slider, 'max', handles.num_imgs);
@@ -554,30 +564,36 @@ if ~isfield(handles,'TracksROI')
     errordlg('Please select first','Nothing to save');
     return;
 end
-%[filename pathname]=uiputfile('.mat','save the selected traces');
+
+i = str2double(get(handles.idx_box,'String'));
 
 tag = handles.img_text.String(end-5:end-4);
-disp(tag);
 filename = ['RfTr_' tag];
-disp(filename);
-
 pathname = handles.OUT_dir;
+
+OUT_path = [pathname '\' filename];
+
+%handles.OUT_paths(i) = [pathname '\' filename];
 
 varname=['tracksRefine'];%filename(1:find(filename=='.')-1);
 eval([varname '=[];']);
 eval([varname '.Area = handles.Area;']);
 eval([varname '.region=handles.region;']);
 eval([varname '.TracksROI=handles.TracksROI;']);
-BFsource=[handles.BFpath handles.BFfile];
+BFsource=[handles.BF_path];
 eval([varname '.BFsource=BFsource;']);
 %eval([varname '.Tracksource=handles.Tracksource;']);
 eval([varname '.TracksALL=handles.Tracksnew;']);
-save([pathname '\' filename],varname);
+save(OUT_path,varname);
+
+set(handles.saved_text,'String', filename);
+handles.OUT_paths(i) = OUT_path;
 
 % save the ROI image
 filenameI = ['Select-' filename(1:find(filename == '.')-1) '.tif'];
 % [filename pathname]=uiputfile('*.tif','save current figure');
 saveas(gcf,[pathname filenameI],'tif');
+guidata(hObject, handles);
 
 % --- Executes on button press in Show_trace.
 function Show_trace_Callback(hObject, eventdata, handles)
@@ -756,7 +772,7 @@ function adj_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-Max_I=handles.Max_value
+Max_I=handles.Max_value;
 %str2double(get(handles.Maxslider_value,'String'));
 peak = str2double(get(handles.Peak_value,'String'));
 if 3*peak <= Max_I

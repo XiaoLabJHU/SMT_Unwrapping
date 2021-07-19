@@ -106,22 +106,22 @@ function Rotate_Callback(hObject, eventdata, handles)
 % Angle=180*(atan((Y(2)-Y(1))/(X(2)-X(1)))+pi/2)/pi;
 
 % get the gray scale of the original image
-% handles.LowI1 = min(handles.BF1(:));
-% handles.HighI1 = max(handles.BF1(:));
-% % rotate the image around the center counterclockwise
-% 
-% Answer = inputdlg('Rotate the image by an angle counterclockwise','Inputp',1);
-% Angle = str2num(Answer{1});
-% BFRot = imrotate(handles.BF1,Angle,'bicubic','crop');
-% % show the rotated image
-% axes(handles.BFimage_tag);
-% hold off
-% imshow(BFRot,[handles.LowI1 handles.HighI1]);
+handles.LowI1 = min(handles.BF1(:));
+handles.HighI1 = max(handles.BF1(:));
+% rotate the image around the center counterclockwise
+
+Answer = inputdlg('Rotate the image by an angle counterclockwise','Inputp',1);
+Angle = str2num(Answer{1});
+BFRot = imrotate(handles.BF1,Angle,'bicubic','crop');
+% show the rotated image
+axes(handles.BFimage_tag);
+hold off
+imshow(BFRot,[handles.LowI1 handles.HighI1]);
 
 response=questdlg('The rotation Okay?', ...
     'Rotate the Cell', 'Yes' , 'No','Yes');
 if strcmp(response,'Yes')
-    BFRot = imrotate(handles.BF1,handles.Angle,'bicubic','crop');
+    BFRot = imrotate(handles.BF1,Angle,'bicubic','crop');
     handles.BFRot = BFRot;
 
     % find the rotation center
@@ -138,7 +138,7 @@ if strcmp(response,'Yes')
         Intensity = handles.TrackcO(ii).Intensity;
         for jj = 1 : size(trace,1)
             Coords = trace(jj,1:2);
-            Coord_rot = coord2dRot( Coords,[ImX,ImY],-handles.Angle);
+            Coord_rot = coord2dRot( Coords,[ImX,ImY],-Angle);
             trace_rot(jj,:) = Coord_rot;
         end
         TrackcOR(ii).XYCoord(:,1:2) = trace_rot;
@@ -395,50 +395,49 @@ handles.LowI1 = min(handles.BF1(:));
 handles.HighI1 = max(handles.BF1(:));
 % rotate the image around the center counterclockwise
 
-%Answer = inputdlg('Rotate the image by an angle counterclockwise','Inputp',1);
-Answer = get(hObject,'Value');
-handles.Angle = 360*Answer;
-BFRot = imrotate(handles.BF1,handles.Angle,'bicubic','crop');
+Answer = inputdlg('Rotate the image by an angle counterclockwise','Inputp',1);
+Angle = str2num(Answer{1});
+BFRot = imrotate(handles.BF1,Angle,'bicubic','crop');
 % show the rotated image
 axes(handles.BFimage_tag);
 hold off
 imshow(BFRot,[handles.LowI1 handles.HighI1]);
 
-% response=questdlg('The rotation Okay?', ...
-%     'Rotate the Cell', 'Yes' , 'No','Yes');
-% if strcmp(response,'Yes')
-%     BFRot = imrotate(handles.BF1,Angle,'bicubic','crop');
-%     handles.BFRot = BFRot;
-% 
-%     % find the rotation center
-%     ImX = (size(handles.BF1,2) + 1)/2;
-%     ImY = (size(handles.BF1,1) + 1)/2;
-%     % rotate the traces according to the angle and center point
-%     axes(handles.BFimage_tag);
-%     hold off
-%     imshow(BFRot,[handles.LowI1 handles.HighI1]);
-%     hold on
-%     for ii = 1 : length(handles.TrackcO)
-%         trace = handles.TrackcO(ii).XYCoord;
-%         Time = handles.TrackcO(ii).Time;
-%         Intensity = handles.TrackcO(ii).Intensity;
-%         for jj = 1 : size(trace,1)
-%             Coords = trace(jj,1:2);
-%             Coord_rot = coord2dRot( Coords,[ImX,ImY],-Angle);
-%             trace_rot(jj,:) = Coord_rot;
-%         end
-%         TrackcOR(ii).XYCoord(:,1:2) = trace_rot;
-%         TrackcOR(ii).Time = Time;
-%         TrackcOR(ii).Intensity = Intensity;
-%         plot(trace_rot(:,1),trace_rot(:,2));
-%         clear trace_rot
-%     end
-%     handles.TrackcOR = TrackcOR;
-% else
-%     axes(handles.BFimage_tag);
-%     hold off
-%     imshow(handles.BF1,[handles.LowI1 handles.HighI1]);
-% end
+response=questdlg('The rotation Okay?', ...
+    'Rotate the Cell', 'Yes' , 'No','Yes');
+if strcmp(response,'Yes')
+    BFRot = imrotate(handles.BF1,Angle,'bicubic','crop');
+    handles.BFRot = BFRot;
+
+    % find the rotation center
+    ImX = (size(handles.BF1,2) + 1)/2;
+    ImY = (size(handles.BF1,1) + 1)/2;
+    % rotate the traces according to the angle and center point
+    axes(handles.BFimage_tag);
+    hold off
+    imshow(BFRot,[handles.LowI1 handles.HighI1]);
+    hold on
+    for ii = 1 : length(handles.TrackcO)
+        trace = handles.TrackcO(ii).XYCoord;
+        Time = handles.TrackcO(ii).Time;
+        Intensity = handles.TrackcO(ii).Intensity;
+        for jj = 1 : size(trace,1)
+            Coords = trace(jj,1:2);
+            Coord_rot = coord2dRot( Coords,[ImX,ImY],-Angle);
+            trace_rot(jj,:) = Coord_rot;
+        end
+        TrackcOR(ii).XYCoord(:,1:2) = trace_rot;
+        TrackcOR(ii).Time = Time;
+        TrackcOR(ii).Intensity = Intensity;
+        plot(trace_rot(:,1),trace_rot(:,2));
+        clear trace_rot
+    end
+    handles.TrackcOR = TrackcOR;
+else
+    axes(handles.BFimage_tag);
+    hold off
+    imshow(handles.BF1,[handles.LowI1 handles.HighI1]);
+end
 guidata(hObject,handles);
 
 
