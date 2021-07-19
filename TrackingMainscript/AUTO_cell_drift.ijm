@@ -1,4 +1,4 @@
-\\Adjust cutoff to your liking. A higher value means less colored regions but also less background
+
 cutoff = 400;
 avg = 0;
 
@@ -16,7 +16,7 @@ for (i=1; i<images.length; i++) {
     corename = substring(name,0,lofname-4);
     prefix = "DFT-";
     ext = ".tif";
-    DFT_path = prefix + outputFolder + corename + ext;
+    DFT_path =outputFolder + prefix + corename + ext;
 
     sn1 = corename + "-0001";
     sn2 = corename + "-0002";
