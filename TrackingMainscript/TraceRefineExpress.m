@@ -465,6 +465,7 @@ errordlg('Please load the traces and do the intensity refine first!','Input Erro
 return;
 end
 Tracksnew=handles.Tracksnew;
+%Tracksnew=handles.TracksSelect;
 
 %refresh the image
 %drift_toggle_Callback(handles.drift_toggle, eventdata, handles);
@@ -587,7 +588,7 @@ eval([varname '.TracksALL=handles.Tracksnew;']);
 save(OUT_path,varname);
 
 set(handles.saved_text,'String', filename);
-handles.OUT_paths(i) = OUT_path;
+handles.OUT_paths(i) = filename;
 
 % save the ROI image
 filenameI = ['Select-' filename(1:find(filename == '.')-1) '.tif'];

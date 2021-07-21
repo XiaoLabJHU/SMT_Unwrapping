@@ -26,6 +26,7 @@ for (i=1; i<images.length; i++) {
     run("Stack to Images");
     imageCalculator("Subtract create 32-bit", sn1, sn2);
     selectWindow("Result of " + sn1);
+    waitForUser("Image OK?");
     setAutoThreshold("Default");
     run("Threshold...");
     call("ij.plugin.frame.ThresholdAdjuster.setMode", "Over/Under");
@@ -34,8 +35,8 @@ for (i=1; i<images.length; i++) {
     avg = getResult('Mean');
     selectWindow("Result of " + sn1);
     setThreshold(avg-cutoff, avg + cutoff);
+    waitForUser("Image OK?");
     wait(200);
-    // waitForUser("Image OK?");
     run("Copy to System");
     run("System Clipboard");
     saveAs("Tiff", DFT_path);

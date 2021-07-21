@@ -90,13 +90,9 @@ function Load_BF1_Callback(hObject, eventdata, handles)
 % load and save the image name and pathname/filename
 if isfield(handles,'BF_path')
     ImBF = imread(handles.BF_path);
-    %set(handles.BF_name,'String',handles.BF_path);
-    [pathname, name, ext] = fileparts(handles.BF_path);
-    filename = [name ext];
 else
     [filename pathname]=uigetfile('*.tif','select the bright field image');
     ImBF = imread([pathname filename]);
-    %set(handles.BF_name,'String',[pathname filename]);
 end
 % change the image to double
 ImBF2 = double(ImBF);
@@ -218,10 +214,10 @@ load([pathnameT filenameT]);
 pixelS = handles.pixelS;
 handles.tracks = tracksRefine.TracksROI;
 handles.BF_path = tracksRefine.BFsource;
-
-Load_BF1_Callback(handles.Load_BF1, eventdata, handles);
-handles = guidata(handles.Load_BF1);
-
+if ~isfield(handles,'ImBF')
+    Load_BF1_Callback(handles.Load_BF1 , eventdata, handles);
+    handles = guidata(handles.Load_BF1);
+end
 axes(handles.image);
 hold on
 handles.trackP = [];
