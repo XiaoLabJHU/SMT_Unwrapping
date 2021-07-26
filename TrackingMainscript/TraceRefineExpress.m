@@ -99,6 +99,9 @@ else
     set(handles.img_text,'String',handles.BF_path);
 end
 hold all
+
+%important, otherwise DFT image will affect the grayscale map for the BF,
+%which will then display as a white image
 handles.image.CLimMode = 'auto';
 guidata(self, handles);
 %guidata(hObject, handles);
