@@ -55,6 +55,7 @@ handles.BF_img = imread(handles.BF_path, 'tif');
 DFT_name = handles.DFT_files(i).name;
 %handles.DFT_tag = handles.DFT_name(end-5:end-4);
 handles.DFT_path = [handles.DFT_dir '\' DFT_name];
+%handles.DFT_img = imread(handles.DFT_path, 'tif');
 handles.DFT_img = imread(handles.DFT_path, 'tif');
 
 COOR_name = handles.COOR_files(i).name;
@@ -78,11 +79,16 @@ guidata(self, handles);
 function refresh_plot(self, handles)
 hold off
 axes(handles.image);
+%imshow(I,[])
 handles.plt_BF = imshow(handles.BF_img, []);
 handles.plt_BF.Visible = 'off';
+%handles.plt_BF.CDataMapping = 'direct';
 hold on
+%imshow(RGB)
+%rgbImage = cat(3, handles.DFT_img, handles.DFT_img, handles.DFT_img);
 handles.plt_DFT = imshow(handles.DFT_img);
 handles.plt_DFT.Visible = 'off';
+
 
 show_drift = get(handles.drift_toggle, 'Value');
 if show_drift
@@ -93,6 +99,7 @@ else
     set(handles.img_text,'String',handles.BF_path);
 end
 hold all
+handles.image.CLimMode = 'auto';
 guidata(self, handles);
 %guidata(hObject, handles);
 
@@ -197,6 +204,7 @@ cd(handles.BF_dir);
 handles.BF_files = dir('*.tif');
 cd(handles.DFT_dir);
 handles.DFT_files = dir('*.tif');
+%handles.DFT_files = dir('*.jpg');
 cd(handles.COOR_dir);
 handles.COOR_files = dir('*.mat');
 cd(handles.ROOT_dir);
@@ -806,31 +814,32 @@ guidata(hObject, handles);
 
 
 % --- Executes on button press in load_data.
-function load_data_Callback(hObject, eventdata, handles)
-% hObject    handle to load_data (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of load_data
-
-i = str2double(get(handles.idx_box,'String'));
-BF_name = handles.BF_files(i).name;
-%handles.BF_tag = handles.BF_name(end-5:end-4);
-handles.BF_path = [handles.BF_dir '\' BF_name];
-handles.BF_img = imread(handles.BF_path, 'tif');
-
-DFT_name = handles.DFT_files(i).name;
-%handles.DFT_tag = handles.DFT_name(end-5:end-4);
-handles.DFT_path = [handles.DFT_dir '\' DFT_name];
-handles.DFT_img = imread(handles.DFT_path, 'tif');
-
-%disp(BF_tag);
-
-COOR_name = handles.COOR_files(i).name;
-%handles.COOR_tag = handles.COOR_name(end-5:end-4);
-handles.COOR_path = [handles.COOR_dir '\' COOR_name];
-handles.COOR = load(handles.COOR_path);
-guidata(hObject, handles);
+% function load_data_Callback(hObject, eventdata, handles)
+% % hObject    handle to load_data (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% % Hint: get(hObject,'Value') returns toggle state of load_data
+% 
+% i = str2double(get(handles.idx_box,'String'));
+% BF_name = handles.BF_files(i).name;
+% %handles.BF_tag = handles.BF_name(end-5:end-4);
+% handles.BF_path = [handles.BF_dir '\' BF_name];
+% handles.BF_img = imread(handles.BF_path, 'tif');
+% 
+% DFT_name = handles.DFT_files(i).name;
+% %handles.DFT_tag = handles.DFT_name(end-5:end-4);
+% handles.DFT_path = [handles.DFT_dir '\' DFT_name];
+% handles.DFT_img = imread(handles.DFT_path, 'tif');
+% %handles.DFT_img = imread(handles.DFT_path, 'jpg');
+% 
+% %disp(BF_tag);
+% 
+% COOR_name = handles.COOR_files(i).name;
+% %handles.COOR_tag = handles.COOR_name(end-5:end-4);
+% handles.COOR_path = [handles.COOR_dir '\' COOR_name];
+% handles.COOR = load(handles.COOR_path);
+% guidata(hObject, handles);
 
 
 
