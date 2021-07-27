@@ -57,7 +57,7 @@ for (i=1; i<images1.length; i++) {
     run("Measure");
     avg = getResult('Mean');
     std_dev = getResult('StdDev');
-    cutoff = 2*std_dev;
+    cutoff = 3*std_dev;
     //selectWindow("Result of " + sn1);
     selectWindow(DFT_name); 
     setThreshold(avg-cutoff, avg + cutoff);
