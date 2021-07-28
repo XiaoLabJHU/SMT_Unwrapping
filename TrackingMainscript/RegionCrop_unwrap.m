@@ -58,7 +58,7 @@ handles.ROIinfo=[];                         % the coordinates of ROI vertex
 handles.Datahandle=handles.listbox1;        % handle to set appdata
 handles.ROIlist=[];                         % list of ROIs
 setappdata(handles.Datahandle,'CellInformation',[]); % initialize appdata
-handles.pixelS = 100;
+handles.pixelS = 81.25;
 % Choose default command line output for RegionCrop_unwrap
 handles.output = hObject;
 movegui(gcf,'center');
