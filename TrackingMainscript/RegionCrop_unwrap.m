@@ -59,6 +59,10 @@ handles.Datahandle=handles.listbox1;        % handle to set appdata
 handles.ROIlist=[];                         % list of ROIs
 setappdata(handles.Datahandle,'CellInformation',[]); % initialize appdata
 handles.pixelS = 81.25;
+
+handles.Date = datestr(now,'yyyymmdd');
+set(handles.edit3, 'String', handles.Date);
+
 % Choose default command line output for RegionCrop_unwrap
 handles.output = hObject;
 movegui(gcf,'center');
@@ -213,6 +217,7 @@ function Load_Traj_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % load and save the image name and pathname/filename
+
 [filenameT pathnameT]=uigetfile('*.mat','Select the refined trajectory structure.');
 load([pathnameT filenameT]);
 pixelS = handles.pixelS;
@@ -301,6 +306,19 @@ Newname=[handles.Date '-TraceInfo-' name(1:index) 'mat'];
 % pathnew=[path '\' Newfolder '\' Newname];
 save(Newname,'TraceInfo');
 
+%DeteALL_Callback(handles.DeteALL, eventdata, handles);
+%handles = guidata(handles.DeteALL);
+
+%After data is saved, clear the active traces.
+handles.ROIlist=[];    
+handles.ROIinfo=[];
+handles.TraceInfo=[];
+handles.ROInum=0;
+set(handles.listbox1,'String',handles.ROIlist);
+set(handles.listbox1,'Value',1);
+
+guidata(hObject, handles);
+
 
 % --- Executes on button press in DeleteTrace.
 function DeleteTrace_Callback(hObject, eventdata, handles)
@@ -332,15 +350,15 @@ function DeteALL_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 response=questdlg('Delete all data?','Warning!','Yes','Cancel','Cancel');
-if strcmp(response,'Yes');
-handles.ROIlist=[];    
-handles.ROIinfo=[];
+if strcmp(response,'Yes')
+    handles.ROIlist=[];    
+    handles.ROIinfo=[];
     handles.TraceInfo=[];
     handles.ROInum=0;
     set(handles.listbox1,'String',handles.ROIlist);
     set(handles.listbox1,'Value',1);
 end
-    guidata(hObject,handles);
+guidata(hObject,handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -394,6 +412,9 @@ function edit3_CreateFcn(hObject, eventdata, handles)
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
+
+%automatically initializes the text box with today's date
+
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end

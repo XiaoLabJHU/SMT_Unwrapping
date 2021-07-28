@@ -12,13 +12,13 @@
 %         3. In this simulation,we consider the velocity = 0.
 % Set the hyperparameters for your simulation, simulate, and save the file
 clear; clc;
-Frame_L = [5:400]; % the range of the possible trajectory length
-ExpT = 1; % the exposure time (if there is dark interval, this should be total time interval)
+Frame_L = [10:400]; % the range of the possible trajectory length
+ExpT = 0.5; % the exposure time (if there is dark interval, this should be total time interval)
 D = 0.0005; % diffusion coefficient: in um^2/s
 B = 200; % boundary size  in nm
 L_err = 15; % localization error in nm
-N_traj = 2000; % number of trajectories for simulation in one condition
-filenameSimu = 'FileName.mat'; % filename to save the simulation result
+N_traj = 200; % number of trajectories for simulation in one condition
+filenameSimu = 'MltA_sim_500ms.mat'; % filename to save the simulation result
 % simulation
 [R_struc,Traj_struc,TimeMatrix,frameMatrix,SpeedMatrix] = rcdfCal(Frame_L,0,ExpT,D,B,L_err,N_traj);
 save(filenameSimu,'R_struc','Traj_struc','TimeMatrix','frameMatrix','SpeedMatrix','Frame_L');
