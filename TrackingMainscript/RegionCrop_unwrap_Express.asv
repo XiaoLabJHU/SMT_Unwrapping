@@ -349,14 +349,12 @@ function Load_Traj_Callback(hObject, eventdata, handles)
 
 disp('Choose refined trajectory folder');
 handles.RfTr_dir = uigetdir([],'Choose refined trajectory folder');
-disp('Choose TraceInfo (output) folder');
-handles.TrIn_dir = uigetdir([], 'Choose TraceInfo (output) folder');
+%handles.TrIn_dir = uigetdir([], 'Choose TraceInfo (output) folder');
 cd(handles.RfTr_dir);
 handles.RfTr_files = dir('*.mat');
 handles.num_RfTr = length(handles.RfTr_files);
 
 set(handles.idx_slider, 'max', handles.num_RfTr);
-set(handles.idx_slider, 'min', 1);
 set(handles.idx_slider, 'Value', 1);
 sliderStep = [1, 1] / (handles.num_RfTr - 1);
 set(handles.idx_slider, 'SliderStep', sliderStep);
@@ -427,11 +425,7 @@ Newname=[handles.Date '-TraceInfo-' name(1:index) 'mat'];
 % mkdir(path,Newfolder);
 % end
 % pathnew=[path '\' Newfolder '\' Newname];
-
-%handles.BF_path = fullfile(handles.BF_dir, BF_name);
-OUT_path = fullfile(handles.TrIn_dir, Newname);
-%save(Newname,'TraceInfo');
-save(OUT_path,'TraceInfo');
+save(Newname,'TraceInfo');
 
 %DeteALL_Callback(handles.DeteALL, eventdata, handles);
 %handles = guidata(handles.DeteALL);

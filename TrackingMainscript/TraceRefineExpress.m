@@ -49,17 +49,22 @@ i = str2double(get(handles.idx_box,'String'));
 
 BF_name = handles.BF_files(i).name;
 %handles.BF_tag = handles.BF_name(end-5:end-4);
-handles.BF_path = [handles.BF_dir '\' BF_name];
+%handles.BF_path = [handles.BF_dir '/' BF_name];
+handles.BF_path = fullfile(handles.BF_dir, BF_name);
+disp(handles.BF_path);
 handles.BF_img = imread(handles.BF_path, 'tif');
 
 DFT_name = handles.DFT_files(i).name;
 %handles.DFT_tag = handles.DFT_name(end-5:end-4);
-handles.DFT_path = [handles.DFT_dir '\' DFT_name];
-%handles.DFT_img = imread(handles.DFT_path, 'tif');
+%handles.DFT_path = [handles.DFT_dir '/' DFT_name];
+handles.DFT_path = fullfile(handles.DFT_dir, DFT_name);
+disp(handles.DFT_path);
 handles.DFT_img = imread(handles.DFT_path, 'tif');
 
 COOR_name = handles.COOR_files(i).name;
-handles.COOR_path = [handles.COOR_dir '\' COOR_name];
+%handles.COOR_path = [handles.COOR_dir '/' COOR_name];
+handles.COOR_path = fullfile(handles.COOR_dir, COOR_name);
+disp(handles.COOR_path);
 handles.COOR = load(handles.COOR_path);
 
 set(handles.saved_text,'String', handles.OUT_paths(i));
@@ -195,12 +200,16 @@ function Load_BF_Callback(hObject, eventdata, handles)
 
 handles.ROOT_dir = uigetdir([],'Choose main data folder');
 %handles.ROOT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT';
+disp('Choose brightfield image folder');
 handles.BF_dir = uigetdir(handles.ROOT_dir, 'Choose brightfield image folder');
 %handles.BF_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\BF';
+disp('Choose drift image folder');
 handles.DFT_dir = uigetdir(handles.ROOT_dir, 'Choose drift image folder');
 %handles.DFT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\drift';
+disp('Choose unrefined tracjectory folder');
 handles.COOR_dir = uigetdir(handles.ROOT_dir, 'Choose unrefined tracjectory folder');
 % handles.COOR_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\long_coords';
+disp('Choose refined tracjectory (output) folder');
 handles.OUT_dir = uigetdir(handles.ROOT_dir, 'Choose refined tracjectory (output) folder');
 % handles.OUT_dir = 'E:\Xiao Lab Dropbox\Lab Members\Yepes_Martin\Projects\Lytic Transglycolase Project\Images\20210407_MltA-Halo-JF646_SMT\refined_traj';
 cd(handles.BF_dir);
@@ -583,7 +592,8 @@ tag = handles.img_text.String(end-5:end-4);
 filename = ['RfTr_' tag];
 pathname = handles.OUT_dir;
 
-OUT_path = [pathname '\' filename];
+%OUT_path = [pathname '\' filename];
+OUT_path = fullfile(pathname, filename);
 
 %handles.OUT_paths(i) = [pathname '\' filename];
 
@@ -785,8 +795,12 @@ function adj_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 Max_I=handles.Max_value;
-%str2double(get(handles.Maxslider_value,'String'));
-peak = str2double(get(handles.Peak_value,'String'));
+peaks = get(handles.Peak_value,'String');
+peak = str2double(peaks(1,:));
+% ensures that peak still has a single non-NaN value in the event that there's more than
+% one peak
+
+
 if 3*peak <= Max_I
     set(handles.Max_slider,'Value', 3*peak/Max_I);
     Max_I = 3*peak;
