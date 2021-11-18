@@ -12,7 +12,7 @@ spotsLinking
 
 %% Section 2: Identify trajectories by manually inspecting the data over a brightfield image.
 
-TraceRefine
+TraceRefineExpress
 
 %% Section 3. Rotate cells with trajectories such that they are entirely vertical.
 % Do not use for nanopillar experiments.

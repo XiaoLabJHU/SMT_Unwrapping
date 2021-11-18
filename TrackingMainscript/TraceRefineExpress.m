@@ -589,7 +589,7 @@ end
 i = str2double(get(handles.idx_box,'String'));
 
 tag = handles.img_text.String(end-5:end-4);
-filename = ['RfTr_' tag];
+filename = ['TR-' tag];
 pathname = handles.OUT_dir;
 
 %OUT_path = [pathname '\' filename];
