@@ -1,4 +1,4 @@
-function Fit_to_a_Circle(filenameIN, TRpathname, BFfilename, BFpathname, GFPfilename, GFPpathname);
+function Fit_to_a_Circle(filenameIn, TRpathname, BFfilename, BFpathname, GFPfilename, GFPpathname);
 
     %Make a figure with the GFP image and super-imposed BF-Traj image
 
@@ -14,8 +14,8 @@ function Fit_to_a_Circle(filenameIN, TRpathname, BFfilename, BFpathname, GFPfile
         TRfilename = filenameIn;
     end
     
-    for idxa = 1:length(TRfilename);
-        TRname = TRfilename{idxa}
+    for idxa = 1:length(TRfilename)
+        TRname = TRfilename{idxa};
         tracks = load([TRpathname TRname]);
         TracksROI = tracks.tracksRefine.TracksROI;
         file_root = TRname(1:find(TRname=='.')-1);
