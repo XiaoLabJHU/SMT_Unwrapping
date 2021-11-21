@@ -218,6 +218,7 @@ function Load_Traj_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % load and save the image name and pathname/filename
 
+disp('Select the refined trajectory structure.');
 [filenameT pathnameT]=uigetfile('*.mat','Select the refined trajectory structure.');
 load([pathnameT filenameT]);
 pixelS = handles.pixelS;
