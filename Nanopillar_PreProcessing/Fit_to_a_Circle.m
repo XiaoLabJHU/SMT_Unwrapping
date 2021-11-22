@@ -1,4 +1,4 @@
-function Fit_to_a_Circle(filenameIN, TRpathname, BFfilename, BFpathname, GFPfilename, GFPpathname);
+function Fit_to_a_Circle(filenameIn, TRpathname, BFfilename, BFpathname, GFPfilename, GFPpathname);
 
     %Make a figure with the GFP image and super-imposed BF-Traj image
 
@@ -15,7 +15,7 @@ function Fit_to_a_Circle(filenameIN, TRpathname, BFfilename, BFpathname, GFPfile
     end
     
     for idxa = 1:length(TRfilename);
-        TRname = TRfilename{idxa}
+        TRname = TRfilename{idxa};
         tracks = load([TRpathname TRname]);
         TracksROI = tracks.tracksRefine.TracksROI;
         file_root = TRname(1:find(TRname=='.')-1);
@@ -32,8 +32,9 @@ function Fit_to_a_Circle(filenameIN, TRpathname, BFfilename, BFpathname, GFPfile
 
         %Plot the GFP image and select the cell to fit.
         ax1 = subplot(2,2,1);
+        PoC(GFPname,GFPpathname,TRname,TRpathname,10);
         GFP = imread([GFPpathname GFPname]);
-        GFPimage = imshow(mat2gray(GFP));
+%         GFPimage = imshow(mat2gray(GFP));
         title(GFPname(1:find(GFPname=='.')-1),'interpreter','none','FontSize',12);
 
         axes(ax1);
