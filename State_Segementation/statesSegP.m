@@ -12,13 +12,13 @@
 %         3. In this simulation,we consider the velocity = 0.
 % Set the hyperparameters for your simulation, simulate, and save the file
 clear; clc;
-Frame_L = [10:400]; % the range of the possible trajectory length
+Frame_L = [10:300]; % the range of the possible trajectory length
 ExpT = 0.5; % the exposure time (if there is dark interval, this should be total time interval)
 D = 0.0005; % diffusion coefficient: in um^2/s
-B = 200; % boundary size  in nm
+B = 2000; % boundary size  in nm
 L_err = 15; % localization error in nm
 N_traj = 200; % number of trajectories for simulation in one condition
-filenameSimu = 'MltA_sim_500ms.mat'; % filename to save the simulation result
+filenameSimu = 'MltC_sim_500ms.mat'; % filename to save the simulation result
 % simulation
 [R_struc,Traj_struc,TimeMatrix,frameMatrix,SpeedMatrix] = rcdfCal(Frame_L,0,ExpT,D,B,L_err,N_traj);
 save(filenameSimu,'R_struc','Traj_struc','TimeMatrix','frameMatrix','SpeedMatrix','Frame_L');
@@ -41,7 +41,7 @@ clear; clc;
     % 'Nanopillar' for Nanopillar experiment
 Experiment = '2D_Tracking'; 
 ExpT = 0.5; % timeinterval in second
-PixelS = 81.25; % pixel size in nm
+PixelS = 100; % pixel size in nm
 ThreshT = 10; % the threshold of trajectory length. Only select the trajectories longer than this
 [filenameIn pathname] = uigetfile('.mat','input the unwrapped trajectory files','multiselect','on');
 
@@ -63,8 +63,8 @@ display(['There are ' num2str(length(file_check.IndTrack)) ' trajectories in the
 Input_Params.Experiment = '2D_Tracking'; 
 
 % set up some parameter2
-Input_Params.PixelS = 81.25; % pixel size in nm
-Input_Params.ExpT = 1; % time interval in second
+Input_Params.PixelS = 100; % pixel size in nm
+Input_Params.ExpT = 0.5; % time interval in second
 Input_Params.TimeRange = [-10,400]; % the time range for trajectory ploting in sec ,better to have some space on both side
 Input_Params.PosiXRang = [-500,500]; % the position range of short axis for plotting in nm
 Input_Params.PosiYRang = [-200,200]; % the position range of short axis for plotting in nm
@@ -83,6 +83,8 @@ Input_Params.Simul_strucs = load([pathnameSimu filenameSimu]);
 %                 b. [V, DisplXb, StDXb, RatioXb, NXb] = tracedropout(TimeT_TXY,TraceTx,Nboot,Pdrop)
 %                 c. [R_V,R_0,Traj_V,Traj_0] = addVoneFLtrajs(Traj_struc,R_struc,Frame_L,frameL,TimeMatrix,V)
 %                 d. Prob = getProbR(R_sample,Bin,epsl)
-Index = 9% change this line from 1 to the max index of trajectories
+Index = 135;% change this line from 1 to the max index of trajectories
 
 Segment_Trajectories(Index,filename,pathname,Input_Params);
+
+%Index = Index+1;
