@@ -122,6 +122,7 @@ response=questdlg('The rotation Okay?', ...
     'Rotate the Cell', 'Yes' , 'No','Yes');
 if strcmp(response,'Yes')
     BFRot = imrotate(handles.BF1,handles.Angle,'bicubic','crop');
+    BFRot(BFRot <= 0) = min(handles.BF1,[],'all');
     handles.BFRot = BFRot;
 
     % find the rotation center
