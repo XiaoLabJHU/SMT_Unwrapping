@@ -278,10 +278,10 @@ while EndFlag ~= 0
             response=questdlg(['Is this selection okay?'], ...
                 'Check', 'Yes' , 'No','Yes');
             if strcmp(response,'Yes')
-                if 7 ~= exist('SegmentedKymos','dir');
-                    mkdir('SegmentedKymos');
+                if 7 ~= exist('SegmentedTrajs','dir');
+                    mkdir('SegmentedTrajs');
                 end
-                saveas(h,[pwd '/SegmentedKymos/' FigSave],'jpg');
+                saveas(h,[pwd '/SegmentedTrajs/' FigSave],'jpg');
                 StateFit(Istate).P0 = P_0;
                 StateFit(Istate).PV = P_V;
                 StateFit(Istate).P_progressive = P_directional;
