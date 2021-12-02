@@ -86,7 +86,7 @@ print(f,'TS_Filtering.png','-dpng','-r600') %print the figure window to png with
 print(f,'TS_Filtering.pdf','-dpdf') %print the figure window to pdf so you can have vector graphics.
 
 %% Filter ThunderSTORM results
-clear; clc;
+% clear; clc;
 % sigma_lower_boundary = 100;
 % sigma_upper_boundary = 300;
 % intensity_boundary = 500;
@@ -100,10 +100,18 @@ for idxa = 1:length(TS_Directory)
     waitbar(idxa/length(TS_Directory),w,...
             ['At track ' num2str(idxa) ' of ' num2str(length(TS_Directory))]);
     file_num = TS_Directory(idxa).name(end-5:end-4);
+
+    %filter intensity
     file_curr = readtable([pwd '/TS_Results/' TS_Directory(idxa).name]);
     file_curr([find(file_curr.intensity_photon_ > intensity_boundary)],:) = [];
-    file_curr([find(file_curr.sigma_nm_ < sigma_lower_boundary)],:) = [];
-    file_curr([find(file_curr.sigma_nm_ > sigma_upper_boundary)],:) = [];
+    
+    %filter sigma 1
+    file_curr([find(file_curr.sigma1_nm_ < sigma_lower_boundary)],:) = [];
+    file_curr([find(file_curr.sigma1_nm_ > sigma_upper_boundary)],:) = [];
+    
+    %filter sigma 2
+    file_curr([find(file_curr.sigma2_nm_ < sigma_lower_boundary)],:) = [];
+    file_curr([find(file_curr.sigma2_nm_ > sigma_upper_boundary)],:) = [];
     writetable(file_curr,[pwd '/TS_results/TS_results-filter-' file_num '.csv']);
 end
 close(w);
