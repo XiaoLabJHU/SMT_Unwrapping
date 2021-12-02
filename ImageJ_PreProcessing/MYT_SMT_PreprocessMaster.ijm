@@ -31,8 +31,8 @@ do_batch = Dialog.getCheckbox();
 
 if(do_TS){
 	TS_Folder = getDirectory("Choose the directory for the ThunderSTORM output");
-	//calibration_file = File.openDialog("Choose the 3D calibration file");
-	calibration_file = "E:\\Xiao Lab Dropbox\\Lab Members\\Yepes_Martin\\Projects\\FtsA\\20211117-FtsA_FastTracking\\cylindrical calibration\\bead_2.yaml";
+	calibration_file = File.openDialog("Choose the 3D calibration file");
+	//calibration_file = "E:\\Xiao Lab Dropbox\\Lab Members\\Yepes_Martin\\Projects\\FtsA\\20211117-FtsA_FastTracking\\cylindrical calibration\\bead_2.yaml";
 }
 
 
@@ -66,7 +66,11 @@ else {
 
 loop_exit = false;
 while(loop_exit == false && i < FL_list.length){
+
+	//clear open image windows and reset rois
 	close("*");
+	roiManager("reset");
+	
 	open(BF_inputFolder + File.separator + BF_list[i]); //open a file
 	BF_id = getImageID();
 	print("BF: " + BF_id);

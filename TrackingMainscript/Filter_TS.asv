@@ -39,7 +39,7 @@ sigma_bins = 0:10:300;
 %intensity_limit = 1000;
 intensity_bins = 0:25:1000;
 
-intensity_boundary = 500;
+intensity_boundary = 300;
 
 sigma_lower_boundary = 100;
 sigma_upper_boundary = 300;
@@ -82,9 +82,7 @@ xlabel('Sigma 2 (nm)');
 ylabel('Frequency');
 
 set([ax1 ax2 ax3 ax4 ax5 ax6],'Box','Off','TickDir','Out','LineWidth',1.5,'FontSize',14,'XColor','k','YColor','k');
-print(f,'TS_Filtering.png','-dpng','-r600') %print the figure window to png with 600 dpi.
-print(f,'TS_Filtering.pdf','-dpdf') %print the figure window to pdf so you can have vector graphics.
-
+print(f,'TS_Filtering.png','-dpng')
 %% Filter ThunderSTORM results
 clear; clc;
 % sigma_lower_boundary = 100;
