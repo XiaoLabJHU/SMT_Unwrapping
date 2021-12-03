@@ -1,5 +1,5 @@
 
-cutoff = 100;
+cutoff = 100;
 avg = 0;
 
 prefix = "DFT-";
@@ -18,7 +18,7 @@ outputFolder = getDirectory("Cell Drift- Choose the output folder!");
 
 close("*");
 
-for (i=1; i<images1.length; i++) {
+for (i=0; i<images1.length; i++) {
     name_pre = images1[i];
    	pre_path = inputFolder1 + name_pre;
    	
@@ -57,7 +57,7 @@ for (i=1; i<images1.length; i++) {
     run("Measure");
     avg = getResult('Mean');
     std_dev = getResult('StdDev');
-    cutoff = 2*std_dev;
+    cutoff = 3*std_dev;
     //selectWindow("Result of " + sn1);
     selectWindow(DFT_name); 
     setThreshold(avg-cutoff, avg + cutoff);

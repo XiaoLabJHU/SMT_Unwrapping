@@ -106,16 +106,16 @@ end
 
 % calculate a part of the files to get the gap distribution
 for ii = 1:ceil(length(filenameL)/5) % only do 20% of the data
-    [data txt] = xlsread([pathname filenameL{ii}]);% read the .csv file
+    spot_table = readtable([pathname filenameL{ii}]); %read the .csv file.
+    data = spot_table.Variables;
     Frame = data(:,2); % frame number
     Coordxyz = data(:,3:4); % xy-coordinates
-    if startsWith(txt{1,5}, 'z')
+    if sum(strcmp(spot_table.Properties.VariableNames,'z_nm_'));
         Coordxyz(:,3) = data(:,5)*ZcF; % z-coordinates
     else
         Coordxyz(:,3) = 0; % z-coordinates
     end
-    Ic = strfind(txt, 'intensity');
-    IndexC = find(not(cellfun('isempty', Ic)));
+    IndexC = find(strcmp(spot_table.Properties.VariableNames, 'intensity_photon_'));
     Intensity = data(:,IndexC); % spots intensity
     Tn = max(Frame);
     Spots = [];
@@ -332,16 +332,16 @@ for ii = 1:ceil(length(filename)) % only do 20% of the data
     fileroot = filecurr(1:find(filecurr=='.')-1);
     filesave = ['Coord-' fileroot '.mat'];
     filesaveL = ['long-' num2str(MinL) '-Coord-' fileroot '.mat'];
-    [data txt] = xlsread([pathname filename{ii}]);% read the .csv file
+    spot_table = readtable([pathname filename{ii}]); %read the .csv file.
+    data = spot_table.Variables;
     Frame = data(:,2); % frame number
     Coordxyz = data(:,3:4); % xy-coordinates
-    if startsWith(txt{1,5}, 'z')
+    if sum(strcmp(spot_table.Properties.VariableNames,'z_nm_'));
         Coordxyz(:,3) = data(:,5)*ZcF; % z-coordinates
     else
         Coordxyz(:,3) = 0; % z-coordinates
     end
-    Ic = strfind(txt, 'intensity');
-    IndexC = find(not(cellfun('isempty', Ic)));
+    IndexC = find(strcmp(spot_table.Properties.VariableNames, 'intensity_photon_'));
     Intensity = data(:,IndexC); % spots intensity
     Tn = max(Frame);
     Spots = [];
