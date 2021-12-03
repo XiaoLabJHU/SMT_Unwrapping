@@ -7,6 +7,7 @@ clear; clc;
 Tracking = '2D';
 
 TS_Directory = dir('TS_Results');
+%-------------------------------------------------------------------------
 isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, '.csv'));
 TS_Directory = TS_Directory(isMatch);
 
@@ -49,6 +50,7 @@ sigma1_upper_boundary = 300;
 sigma2_lower_boundary = 100;
 sigma2_upper_boundary = 300;
 
+%-----------------------------------------------------------------------------
 %Calculate bins from boundaries.
 filtered_intensity_bins = 0:25:intensity_boundary;
 switch Tracking
@@ -135,6 +137,7 @@ sigma2_lower_boundary = 100;
 sigma2_upper_boundary = 300;
 
 TS_Directory = dir('TS_Results');
+%---------------------------------------------------------------
 isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, '.csv'));
 TS_Directory = TS_Directory(isMatch);
 
