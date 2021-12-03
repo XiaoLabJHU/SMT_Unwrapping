@@ -5,3 +5,6 @@ TrackingMainscript/Gap_Distribution-20.pdf
 *.pdf
 *.png
 Nanopillar_PreProcessing/.DS_Store
+combined-plot.tif
+*.fig
+*.tif

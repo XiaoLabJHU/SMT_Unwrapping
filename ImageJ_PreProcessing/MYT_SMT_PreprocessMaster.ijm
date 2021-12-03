@@ -31,8 +31,8 @@ do_batch = Dialog.getCheckbox();
 
 if(do_TS){
 	TS_Folder = getDirectory("Choose the directory for the ThunderSTORM output");
-	calibration_file = File.openDialog("Choose the 3D calibration file");
-	//calibration_file = "E:\\Xiao Lab Dropbox\\Lab Members\\Yepes_Martin\\Projects\\FtsA\\20211117-FtsA_FastTracking\\cylindrical calibration\\bead_2.yaml";
+	//calibration_file = File.openDialog("Choose the 3D calibration file");
+	calibration_file = "E:\\Xiao Lab Dropbox\\Lab Members\\Yepes_Martin\\Projects\\FtsA\\20211117-FtsA_FastTracking\\cylindrical calibration\\bead_2.yaml";
 }
 
 
@@ -66,15 +66,15 @@ else {
 
 loop_exit = false;
 while(loop_exit == false && i < FL_list.length){
-
-	//clear open image windows and reset rois
 	close("*");
 	roiManager("reset");
-	
 	open(BF_inputFolder + File.separator + BF_list[i]); //open a file
 	BF_id = getImageID();
 	print("BF: " + BF_id);
 	print("Opened: " + BF_inputFolder + File.separator + BF_list[i]); //optional feedback; can comment to suppress
+	run("In [+]");
+	run("In [+]");
+	run("In [+]");
 			
 	open(FL_inputFolder + File.separator + FL_list[i]); //open a file
 	//save_path = ZP_outputFolder + File.separator + File.nameWithoutExtension + fileTag + ".tif";
@@ -82,11 +82,23 @@ while(loop_exit == false && i < FL_list.length){
 	//RFP_name = getTitle();
 	print("FL Movie: " + FL_id);
 	print("Opened: " + FL_inputFolder + File.separator + FL_list[i]);
+	run("In [+]");
+	run("In [+]");
+	run("In [+]");
+
 
 	if(do_ZP){
 		selectImage(FL_id);
 		ZP_path = ZP_Folder + File.separator + File.nameWithoutExtension + ZP_Tag + ".tif";
 		run("Z Project...", "projection=[Max Intensity]");
+		ZP_id = getImageID();
+		print("Z Projection: " + ZP_id);
+		run("In [+]");
+		run("In [+]");
+		run("In [+]");
+		run("Fire");
+		//run("Copy to System");
+		//run("System Clipboard");
 		saveAs("Tiff", ZP_path);
 	}
 
@@ -158,8 +170,12 @@ while(loop_exit == false && i < FL_list.length){
 				i_tag = ""+(i+1);
 			}
 			cell_Folder = MOV_Folder + File.separator + i_tag;
+			ROI_path = cell_Folder + File.separator + "ROI_" + i_tag + ".zip";
 			if (!File.exists(cell_Folder)){
 				File.makeDirectory(cell_Folder);
+				if(File.exists(ROI_path)){
+					roiManager("Open", ROI_path);
+				}
 			}
 			waitForUser("Choose ROIs and then hit OK");
 			numROIs = roiManager("count");
@@ -177,18 +193,24 @@ while(loop_exit == false && i < FL_list.length){
 					roiManager("Rename", ROI_name);
 			
 					selectImage(BF_id);
+					//waitForUser("tst");
 					roiManager("Select", j);
 					BF_title = ROI_name + "_BF";
-					run("Duplicate...", "title=&BF_title duplicate channels=2");
+					//run("Duplicate...", "title=&BF_title duplicate channels=2");
+					run("Duplicate...", "title=&BF_title");
 					//imagewidth = getWidth;
 					//imageheight = getHeight;
 					//imagewidth = imagewidth*4;
 					//imageheight = imageheight*4;
+					
+					//run("Copy");
+					//run("Internal Clipboard");
 					run("Copy to System");
-					run("Paste");
+					run("System Clipboard");
 					//saveAs("Tiff", "/Users/myepes/Desktop/Clipboard.tif");
 					saveAs("Tiff", cell_Folder + File.separator + BF_title + ".tif"); //might change file type and matching file suffix
 					//print("Saved to: " + img_path + File.separator + BF_title + ".tif"); //optional feedback; can comment to suppress
+					wait(200);
 					
 					selectImage(FL_id);
 					roiManager("Select", j);
@@ -205,6 +227,16 @@ while(loop_exit == false && i < FL_list.length){
 					saveAs("Gif", mov_path);
 					//run("AVI... ", "compression=JPEG frame=10 save=[&avi_name]");
 					//print("Saved to: " + img_path + File.separator + mov_title + ".tif"); //optional feedback; can comment to suppress
+
+					if(do_ZP){
+						selectImage(ZP_id);
+						roiManager("Select", j);
+						ZP_title = ROI_name + "_ZP";
+						run("Duplicate...", "title=&ZP_title");
+						run("Copy to System");
+						run("System Clipboard");
+						saveAs("Tiff", cell_Folder + File.separator + ZP_title + ".tif"); 
+					}
 				}//roi manager loop
 				roiManager("save", cell_Folder + File.separator + "ROI_" + i_tag + ".zip");
 			}
