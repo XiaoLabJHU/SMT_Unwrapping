@@ -1,23 +1,20 @@
-%% Initialize directories
+%% Plot raw ThunderSTORM results to find boundaries. First build the struc.
+% Assumes folder with ThunderSTORM results is named "TS_Results."
+% Be in the directory above that.
 clear; clc;
 
-if ~exist("MAIN_dir", "var")
-     MAIN_dir = uigetdir([],"Choose main data folder");
-end
-cd(MAIN_dir);
-
-%% Plot raw ThunderSTORM results to find boundaries. First build the struc.
-%clear; clc;
+%Answer with '2D' or '3D'.
+Tracking = '2D';
 
 TS_Directory = dir('TS_Results');
-
-%handles.RfTr_files = dir('*.csv');
-%isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, '.csv'));
-isMatch = contains(strfind(TS_Directory.name, '.csv'));
-% isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, 'filter'));
+isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, '.csv'));
 TS_Directory = TS_Directory(isMatch);
 
-intens = []; sigma1 = []; sigma2 = [];
+%remove any csv files with 'filter' in the name. Useful if reanalyzing old data set.
+isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, 'filter'));
+TS_Directory(isMatch) = [];
+
+intens = []; sigma1 = []; sigma2 = []; sigma = [];
 w = waitbar(0,'Please wait...');
 for idxa = 1:length(TS_Directory)
     waitbar(idxa/length(TS_Directory),w,...
@@ -25,83 +22,133 @@ for idxa = 1:length(TS_Directory)
     file_num = TS_Directory(idxa).name(end-5:end-4);
     file_curr = readtable([pwd '/TS_Results/' TS_Directory(idxa).name]);
     intens = [intens; file_curr.intensity_photon_];
-    sigma1 = [sigma1; file_curr.sigma1_nm_];
-    sigma2 = [sigma2; file_curr.sigma2_nm_];
+    switch Tracking
+        case '3D'
+            sigma1 = [sigma1; file_curr.sigma1_nm_];
+            sigma2 = [sigma2; file_curr.sigma2_nm_];
+        case '2D'
+            sigma = [sigma; file_curr.sigma_nm_];
+    end
 end
 close(w);
 
-%% Plot the results.
+%% Plot the results and test boundaries for fit.
 close all;
-%sigma_lower_limit = 0;
-%sigma_upper_limit = 300;
-sigma_bins = 0:10:300;
 
-%intensity_limit = 1000;
-intensity_bins = 0:25:1000;
+%Input your parameters below.
+figsize = [10 8];
+intensity_boundary = 500;
 
-intensity_boundary = 300;
 
 sigma_lower_boundary = 100;
 sigma_upper_boundary = 300;
 
+%If using 3D tracking:
+sigma1_lower_boundary = 100;
+sigma1_upper_boundary = 300;
+sigma2_lower_boundary = 100;
+sigma2_upper_boundary = 300;
+
+%Calculate bins from boundaries.
 filtered_intensity_bins = 0:25:intensity_boundary;
 filtered_sigma_bins = sigma_lower_boundary:10:sigma_upper_boundary;
-
-figsize = [15 8];
+filtered_sigma1_bins = sigma1_lower_boundary:10:sigma1_upper_boundary;
+filtered_sigma2_bins = sigma2_lower_boundary:10:sigma2_upper_boundary;
 
 f = figure('Units','Inches','Position',[0 0 figsize],'PaperUnits','inches','PaperPosition',[0 0 figsize],'PaperSize',figsize,'CreateFcn','movegui center');
 
-ax1 = subplot(2,3,1);
-histogram(intens,intensity_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
+switch Tracking
+    case '2D'; ax1 = subplot(2,2,1);
+    case '3D'; ax1 = subplot(2,3,1);
+end
+histogram(intens,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
 xlabel('Intensity (Photon)');
-ylabel('Frequency');
+ylabel({'\bfUnfiltered\rm' 'Frequency'});
+set(ax1,'Yscale','log');
+title(['\rmN = ' num2str(length(intens)) ' localizations'],'FontSize',12);
 
-ax2 = subplot(2,3,2);
-histogram(sigma1,sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
-xlabel('Sigma 1 (nm)');
-ylabel('Frequency');
+switch Tracking
+    case '2D'
+        ax2 = subplot(2,2,2);
+        histogram(sigma,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
+        xlabel('Sigma (nm)');
+        ylabel('Frequency');
+        
+        ax3 = subplot(2,2,3);
+    case '3D'
+        ax2 = subplot(2,3,2);
+        histogram(sigma1,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
+        xlabel('Sigma 1 (nm)');
+        ylabel('Frequency');
 
-ax3 = subplot(2,3,3);
-histogram(sigma2,sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
-xlabel('Sigma 2 (nm)');
-ylabel('Frequency');
-
-ax4 = subplot(2,3,4);
+        ax3 = subplot(2,3,3);
+        histogram(sigma2,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
+        xlabel('Sigma 2 (nm)');
+        ylabel('Frequency');
+        
+        ax4 = subplot(2,3,4);
+end
 histogram(intens,filtered_intensity_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
 xlabel('Intensity (Photon)');
-ylabel('Frequency');
+ylabel({'\bfFiltered\rm' 'Frequency'});
 
-ax5 = subplot(2,3,5);
-histogram(sigma1, filtered_sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
-xlabel('Sigma 1 (nm)');
-ylabel('Frequency');
+switch Tracking
+    case '2D'
+        ax4 = subplot(2,2,4);
+        histogram(sigma, filtered_sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
+        xlabel('Sigma (nm)');
+        ylabel('Frequency');    
+    case '3D'
+        ax5 = subplot(2,3,5);
+        histogram(sigma1, filtered_sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
+        xlabel('Sigma 1 (nm)');
+        ylabel('Frequency');
 
-ax6 = subplot(2,3,6);
-histogram(sigma2, filtered_sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
-xlabel('Sigma 2 (nm)');
-ylabel('Frequency');
+        ax6 = subplot(2,3,6);
+        histogram(sigma2, filtered_sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
+        xlabel('Sigma 2 (nm)');
+        ylabel('Frequency');
+end
+set(f.Children,'Box','Off','TickDir','Out','LineWidth',1.5,'FontSize',14,'XColor','k','YColor','k');
+print(f,'TS_Filtering.png','-dpng','-r600') %print the figure window to png with 600 dpi.
+%print(f,'TS_Filtering.pdf','-dpdf') %print the figure window to pdf so you can have vector graphics.
 
-set([ax1 ax2 ax3 ax4 ax5 ax6],'Box','Off','TickDir','Out','LineWidth',1.5,'FontSize',14,'XColor','k','YColor','k');
-print(f,'TS_Filtering.png','-dpng')
 %% Filter ThunderSTORM results
 clear; clc;
-% sigma_lower_boundary = 100;
-% sigma_upper_boundary = 300;
-% intensity_boundary = 500;
+
+%Answer with '2D' or '3D'.
+Tracking = '2D';
+
+%Plug in final boundaries from section above.
+sigma_lower_boundary = 100;
+sigma_upper_boundary = 300;
+intensity_boundary = 500;
 
 TS_Directory = dir('TS_Results');
 isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, '.csv'));
 TS_Directory = TS_Directory(isMatch);
+
+%remove any csv files with 'filter' in the name. Useful if reanalyzing old data set.
+isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, 'filter'));
+TS_Directory(isMatch) = [];
 
 w = waitbar(0,'Please wait...');
 for idxa = 1:length(TS_Directory)
     waitbar(idxa/length(TS_Directory),w,...
             ['At track ' num2str(idxa) ' of ' num2str(length(TS_Directory))]);
     file_num = TS_Directory(idxa).name(end-5:end-4);
+
+    %filter intensity
     file_curr = readtable([pwd '/TS_Results/' TS_Directory(idxa).name]);
     file_curr([find(file_curr.intensity_photon_ > intensity_boundary)],:) = [];
-    file_curr([find(file_curr.sigma_nm_ < sigma_lower_boundary)],:) = [];
-    file_curr([find(file_curr.sigma_nm_ > sigma_upper_boundary)],:) = [];
+    
+    %filter sigma 1
+    file_curr([find(file_curr.sigma1_nm_ < sigma_lower_boundary)],:) = [];
+    file_curr([find(file_curr.sigma1_nm_ > sigma_upper_boundary)],:) = [];
+    
+    %filter sigma 2
+    file_curr([find(file_curr.sigma2_nm_ < sigma_lower_boundary)],:) = [];
+    file_curr([find(file_curr.sigma2_nm_ > sigma_upper_boundary)],:) = [];
     writetable(file_curr,[pwd '/TS_results/TS_results-filter-' file_num '.csv']);
 end
 close(w);
