@@ -64,35 +64,35 @@ end
 f = figure('Units','Inches','Position',[0 0 figsize],'PaperUnits','inches','PaperPosition',[0 0 figsize],'PaperSize',figsize,'CreateFcn','movegui center');
 
 switch Tracking
-    case '2D'; ax1 = subplot(2,2,1);
-    case '3D'; ax1 = subplot(2,3,1);
+    case '2D'; subplot(2,2,1);
+    case '3D'; subplot(2,3,1);
 end
 histogram(intens,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
 xlabel('Intensity (Photon)');
 ylabel({'\bfUnfiltered\rm' 'Frequency'});
-set(ax1,'Yscale','log');
+set(gca,'Yscale','log');
 title(['\rmN = ' num2str(length(intens)) ' localizations'],'FontSize',12);
 
 switch Tracking
     case '2D'
-        ax2 = subplot(2,2,2);
+        subplot(2,2,2);
         histogram(sigma,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
         xlabel('Sigma (nm)');
         ylabel('Frequency');
         
-        ax3 = subplot(2,2,3);
+        subplot(2,2,3);
     case '3D'
-        ax2 = subplot(2,3,2);
+        subplot(2,3,2);
         histogram(sigma1,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
         xlabel('Sigma 1 (nm)');
         ylabel('Frequency');
 
-        ax3 = subplot(2,3,3);
+        subplot(2,3,3);
         histogram(sigma2,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
         xlabel('Sigma 2 (nm)');
         ylabel('Frequency');
         
-        ax4 = subplot(2,3,4);
+        subplot(2,3,4);
 end
 histogram(intens,filtered_intensity_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
 xlabel('Intensity (Photon)');
@@ -100,17 +100,17 @@ ylabel({'\bfFiltered\rm' 'Frequency'});
 
 switch Tracking
     case '2D'
-        ax4 = subplot(2,2,4);
+        subplot(2,2,4);
         histogram(sigma, filtered_sigma_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
         xlabel('Sigma (nm)');
         ylabel('Frequency');    
     case '3D'
-        ax5 = subplot(2,3,5);
+        subplot(2,3,5);
         histogram(sigma1, filtered_sigma1_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
         xlabel('Sigma 1 (nm)');
         ylabel('Frequency');
 
-        ax6 = subplot(2,3,6);
+        subplot(2,3,6);
         histogram(sigma2, filtered_sigma2_bins,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
         xlabel('Sigma 2 (nm)');
         ylabel('Frequency');
@@ -154,7 +154,7 @@ for idxa = 1:length(TS_Directory)
     file_curr([find(file_curr.intensity_photon_ > intensity_boundary)],:) = [];
     
     switch Tracking
-        case '2D';
+        case '2D'
             file_curr([find(file_curr.sigma_nm_ < sigma_lower_boundary)],:) = [];
             file_curr([find(file_curr.sigma_nm_ > sigma_upper_boundary)],:) = [];
         case '3D'
