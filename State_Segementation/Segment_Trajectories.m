@@ -54,6 +54,8 @@ Xnoise = Threshold_all.Xnoise;
 % GUI
 h = figure;
 set(h, 'position',[100,100,1800,800]);
+%quick fix
+set(h, 'Resize', 'on');
 
 % show the bright field image
 switch Experiment

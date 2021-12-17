@@ -83,6 +83,6 @@ Input_Params.Simul_strucs = load([pathnameSimu filenameSimu]);
 %                 b. [V, DisplXb, StDXb, RatioXb, NXb] = tracedropout(TimeT_TXY,TraceTx,Nboot,Pdrop)
 %                 c. [R_V,R_0,Traj_V,Traj_0] = addVoneFLtrajs(Traj_struc,R_struc,Frame_L,frameL,TimeMatrix,V)
 %                 d. Prob = getProbR(R_sample,Bin,epsl)
-Index = 136 % change this line from 1 to the max index of trajectories
+Index = 1; % change this line from 1 to the max index of trajectories
 
 Segment_Trajectories(Index,filename,pathname,Input_Params);

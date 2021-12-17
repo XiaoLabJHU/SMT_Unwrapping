@@ -31,8 +31,8 @@ do_batch = Dialog.getCheckbox();
 
 if(do_TS){
 	TS_Folder = getDirectory("Choose the directory for the ThunderSTORM output");
-	//calibration_file = File.openDialog("Choose the 3D calibration file");
-	calibration_file = "E:\\Xiao Lab Dropbox\\Lab Members\\Yepes_Martin\\Projects\\FtsA\\20211117-FtsA_FastTracking\\cylindrical calibration\\bead_2.yaml";
+	calibration_file = File.openDialog("Choose the 3D calibration file");
+	//calibration_file = "E:\\Xiao Lab Dropbox\\Lab Members\\Yepes_Martin\\Projects\\FtsA\\20211117-FtsA_FastTracking\\cylindrical calibration\\bead_2.yaml";
 }
 
 
