@@ -37,6 +37,9 @@ for ii = 1 : length(filename)
             TraceXL_R = circleProject(CircleL,TraceX,TraceZL);
             TraceXM_R = circleProject(CircleM,TraceX,TraceZM);
             TraceXS_R = circleProject(CircleS,TraceX,TraceZS);
+            %Maybe add some internal check to make sure the projection
+            %isn't taking the point too far awy
+
             % add to 2D
             XYCoord_large = [TraceXL_R,XYZCoord(:,2)];
             XYCoord_median = [TraceXM_R,XYZCoord(:,2)];
@@ -47,6 +50,7 @@ for ii = 1 : length(filename)
         Track = rmfield(Track,'XYZCoord');
         TraceInfo(jj).TraceInfo.TrackcOR_unwrap = Track;
     end
+    %overwrites original file.
     save([pathname filenameX],'TraceInfo');
 end
 display('Finished!')

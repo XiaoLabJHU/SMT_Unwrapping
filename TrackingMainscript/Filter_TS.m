@@ -6,6 +6,8 @@ clear; clc;
 %Answer with '2D' or '3D'.
 Tracking = '2D';
 
+cd(uigetdir([]));
+
 TS_Directory = dir('TS_Results');
 %-------------------------------------------------------------------------
 isMatch = ~cellfun('isempty', strfind({TS_Directory.name}, '.csv'));
@@ -70,7 +72,7 @@ end
 histogram(intens,50,'Normalization','Probability','FaceColor',rgb('GainsBoro'),'EdgeColor','k','LineWidth',1);
 xlabel('Intensity (Photon)');
 ylabel({'\bfUnfiltered\rm' 'Frequency'});
-set(gca,'Yscale','log');
+%set(gca,'Yscale','log');
 title(['\rmN = ' num2str(length(intens)) ' localizations'],'FontSize',12);
 
 switch Tracking
@@ -149,6 +151,8 @@ w = waitbar(0,'Please wait...');
 for idxa = 1:length(TS_Directory)
     waitbar(idxa/length(TS_Directory),w,...
             ['At track ' num2str(idxa) ' of ' num2str(length(TS_Directory))]);
+    new_name = ['Filter_I-' num2str(intensity_boundary) '_' TS_Directory(idxa).name];
+    %disp(new_name)
     file_num = TS_Directory(idxa).name(end-5:end-4);
     file_curr = readtable([pwd '/TS_Results/' TS_Directory(idxa).name]);
     file_curr([find(file_curr.intensity_photon_ > intensity_boundary)],:) = [];
@@ -163,6 +167,6 @@ for idxa = 1:length(TS_Directory)
             file_curr([find(file_curr.sigma2_nm_ < sigma2_lower_boundary)],:) = [];
             file_curr([find(file_curr.sigma2_nm_ > sigma2_upper_boundary)],:) = [];
     end
-    writetable(file_curr,[pwd '/TS_results/TS_results-filter-' file_num '.csv']);
+    writetable(file_curr,[pwd '/TS_results/' new_name]);
 end
 close(w);

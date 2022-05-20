@@ -4,6 +4,9 @@
 
 i = 0;
 
+x = 0.90*screenHeight; // main window size
+y = 0.25*x; // popup window size
+
 BF_list = getFileList(BF_inputFolder); //read filenames of input folder
 BF_list = Array.sort(BF_list); //alphabetically sort the names (nicety)
 	
@@ -72,9 +75,10 @@ while(loop_exit == false && i < FL_list.length){
 	BF_id = getImageID();
 	print("BF: " + BF_id);
 	print("Opened: " + BF_inputFolder + File.separator + BF_list[i]); //optional feedback; can comment to suppress
-	run("In [+]");
-	run("In [+]");
-	run("In [+]");
+//	run("In [+]");
+//	run("In [+]");
+//	run("In [+]");
+	setLocation(0, 0, x, x);
 			
 	open(FL_inputFolder + File.separator + FL_list[i]); //open a file
 	//save_path = ZP_outputFolder + File.separator + File.nameWithoutExtension + fileTag + ".tif";
@@ -82,24 +86,34 @@ while(loop_exit == false && i < FL_list.length){
 	//RFP_name = getTitle();
 	print("FL Movie: " + FL_id);
 	print("Opened: " + FL_inputFolder + File.separator + FL_list[i]);
-	run("In [+]");
-	run("In [+]");
-	run("In [+]");
-
+//	run("In [+]");
+//	run("In [+]");
+//	run("In [+]");
+	setLocation(0, 0, x, x);
+	getMinAndMax(min, max);
+	setMinAndMax(min, 1500);
+	
+	run("Tile");
 
 	if(do_ZP){
+		wait(200);
 		selectImage(FL_id);
 		ZP_path = ZP_Folder + File.separator + File.nameWithoutExtension + ZP_Tag + ".tif";
 		run("Z Project...", "projection=[Max Intensity]");
 		ZP_id = getImageID();
 		print("Z Projection: " + ZP_id);
-		run("In [+]");
-		run("In [+]");
-		run("In [+]");
+		setLocation(0, 0, x, x);
+		getMinAndMax(min, max);
+		setMinAndMax(min, 1500);
+//		run("In [+]");
+//		run("In [+]");
+//		run("In [+]");
 		run("Fire");
 		//run("Copy to System");
 		//run("System Clipboard");
 		saveAs("Tiff", ZP_path);
+		run("Tile");
+
 	}
 
 	if(do_TS){
@@ -195,9 +209,10 @@ while(loop_exit == false && i < FL_list.length){
 					selectImage(BF_id);
 					//waitForUser("tst");
 					roiManager("Select", j);
-					BF_title = ROI_name + "_BF";
+					BF_title = ROI_name + "_mBF";
 					//run("Duplicate...", "title=&BF_title duplicate channels=2");
 					run("Duplicate...", "title=&BF_title");
+					setLocation(0, 0, y, y);
 					//imagewidth = getWidth;
 					//imageheight = getHeight;
 					//imagewidth = imagewidth*4;
@@ -216,34 +231,50 @@ while(loop_exit == false && i < FL_list.length){
 					roiManager("Select", j);
 					mov_title = ROI_name + "_mov";
 					run("Duplicate...", "title=&mov_title duplicate");
+					setLocation(0, 0, y, y);
+					getMinAndMax(min, max);
+					setMinAndMax(min, 1500);
+					mov_path = cell_Folder + File.separator + mov_title + ".gif";
+					
+					run("Tile");
+					waitForUser("Review movie");
+					run("8-bit");
+					saveAs("Gif", mov_path);
 					//imagewidth = getWidth;
 					//imageheight = getHeight;
 					//imagewidth = imagewidth*4;
 					//imageheight = imageheight*4;
 					//saveAs("Tiff", img_path + File.separator + mov_title + ".tif"); //might change file type and matching file suffix
 
-					mov_path = cell_Folder + File.separator + mov_title + ".gif";
-					run("8-bit");
-					saveAs("Gif", mov_path);
+
 					//run("AVI... ", "compression=JPEG frame=10 save=[&avi_name]");
 					//print("Saved to: " + img_path + File.separator + mov_title + ".tif"); //optional feedback; can comment to suppress
 
 					if(do_ZP){
 						selectImage(ZP_id);
 						roiManager("Select", j);
-						ZP_title = ROI_name + "_ZP";
+						ZP_title = ROI_name + "_mZP";
 						run("Duplicate...", "title=&ZP_title");
 						run("Copy to System");
 						run("System Clipboard");
 						saveAs("Tiff", cell_Folder + File.separator + ZP_title + ".tif"); 
 					}
+
+					close("*_m*");
+					
+					
 				}//roi manager loop
 				roiManager("save", cell_Folder + File.separator + "ROI_" + i_tag + ".zip");
+				//run("Tile");
+				
+				//new addition
+				//waitForUser("Review movies");
 			}
 		//roiManager("select");
 		}
 		else{
 			waitForUser("Done viewing image");
+			run("Tile");
 		}
 		Dialog.create("Go to next image?");
 		//Dialog.addString("Title:", title);

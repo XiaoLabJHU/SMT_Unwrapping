@@ -22,7 +22,7 @@ function varargout = TraceRotate(varargin)
 
 % Edit the above text to modify the response to help TraceRotate
 
-% Last Modified by GUIDE v2.5 19-Jul-2021 14:22:47
+% Last Modified by GUIDE v2.5 17-May-2022 13:28:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,6 +67,28 @@ for ii = 1 : length(handles.TrackcO)
     plot(trace(:,1),trace(:,2))
 end
 movegui(gcf,'center');
+
+%Set slider initial postion
+
+set(handles.slider3, 'max', 1);
+set(handles.slider3, 'min', -1);
+set(handles.slider3, 'Value', 0);
+
+handles.rotation_range = 180;
+
+
+set(handles.slider4, 'max', 1);
+set(handles.slider4, 'min', -1);
+set(handles.slider4, 'Value', 0);
+
+handles.max_offset = 30; 
+
+handles.offset_angle = 0; 
+
+% sliderStep = [1, 1] / (handles.num_RfTr - 1);
+% set(handles.idx_slider, 'SliderStep', sliderStep);
+
+
 % Choose default command line output 
 handles.output = hObject;
 
@@ -201,6 +223,12 @@ TraceInfo.TrackcOR_unwrap = handles.TrackcOR_unwrap;
 TraceInfo.Center = handles.Center;
 TraceInfo.Radius = handles.SRadius;
 TraceInfo.BFrot = handles.BFRot;
+TraceInfo.offset_angle = handles.offset_angle; 
+
+if isfield(handles,'cell_length')
+    TraceInfo.cell_length = handles.cell_length; 
+end
+
 setappdata(handles.Datahandle,'TraceInformation',TraceInfo);
 delete(handles.figure1);
 
@@ -327,6 +355,7 @@ function Z_gen_tag_Callback(hObject, eventdata, handles)
      OutputS{2,1} = ['Septum radius = ' num2str(SRadius(2)) ' pixel'];
      OutputS{3,1} = ['Septum radius = ' num2str(SRadius(2)*handles.pixelS) ' nm'];
      OutputS{4,1} = ['Septum radius in a range from ' num2str(SRadius(3)) ' to ' num2str(SRadius(1)) ' pixel'];
+     OutputS{5,1} = ['Trajectory is at a ' num2str(handles.offset_angle, 2) ' degree offset from septum'];
      set(handles.data_tag, 'String', OutputS);
      
      % unwrap the coordinates based on the center and radius
@@ -397,8 +426,11 @@ handles.HighI1 = max(handles.BF1(:));
 % rotate the image around the center counterclockwise
 
 %Answer = inputdlg('Rotate the image by an angle counterclockwise','Inputp',1);
-Answer = get(hObject,'Value');
-handles.Angle = 360*Answer;
+cell_val = get(hObject,'Value');
+set(handles.slider4, 'Value', 0);
+
+handles.Angle = handles.rotation_range*cell_val;
+
 BFRot = imrotate(handles.BF1,handles.Angle,'bicubic','crop');
 % show the rotated image
 axes(handles.BFimage_tag);
@@ -440,6 +472,9 @@ imshow(BFRot,[handles.LowI1 handles.HighI1]);
 %     hold off
 %     imshow(handles.BF1,[handles.LowI1 handles.HighI1]);
 % end
+
+handles = guidata(hObject);
+
 guidata(hObject,handles);
 
 
@@ -453,3 +488,124 @@ function slider3_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes on slider movement.
+function slider4_Callback(hObject, eventdata, handles)
+% hObject    handle to slider4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+handles.LowI1 = min(handles.BF1(:));
+handles.HighI1 = max(handles.BF1(:));
+
+cell_val = get(handles.slider3,'Value');
+
+offset = get(hObject,'Value');
+
+handles.offset_angle = handles.max_offset*offset;
+
+handles.Angle = handles.rotation_range*cell_val + handles.offset_angle;
+
+BFRot = imrotate(handles.BF1,handles.Angle,'bicubic','crop');
+BFRot(BFRot <= 0) = min(handles.BF1,[],'all');
+handles.BFRot = BFRot;
+
+% find the rotation center
+ImX = (size(handles.BF1,2) + 1)/2;
+ImY = (size(handles.BF1,1) + 1)/2;
+
+% show the rotated image
+axes(handles.BFimage_tag);
+hold off
+imshow(BFRot,[handles.LowI1 handles.HighI1]);
+hold on
+for ii = 1 : length(handles.TrackcO)
+    trace = handles.TrackcO(ii).XYCoord;
+    Time = handles.TrackcO(ii).Time;
+    Intensity = handles.TrackcO(ii).Intensity;
+    for jj = 1 : size(trace,1)
+        Coords = trace(jj,1:2);
+        Coord_rot = coord2dRot( Coords,[ImX,ImY],-handles.Angle);
+        trace_rot(jj,:) = Coord_rot;
+    end
+    TrackcOR(ii).XYCoord(:,1:2) = trace_rot;
+    TrackcOR(ii).Time = Time;
+    TrackcOR(ii).Intensity = Intensity;
+    plot(trace_rot(:,1),trace_rot(:,2));
+    clear trace_rot
+end
+handles.TrackcOR = TrackcOR;
+
+guidata(hObject,handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function slider4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on button press in length_button.
+function length_button_Callback(hObject, eventdata, handles)
+% hObject    handle to length_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% generate the unwrapped coordinates
+%      Xfine = handles.Xfine;
+%      Xpixel = handles.Xpixel;
+%      ScanLine = handles.ScanLine;
+%      ScanFine = handles.ScanFine;
+
+%      axes(handles.LineScan_tag);
+     axes(handles.BFimage_tag);
+     [X, Y] = ginput(2);
+     plot(X,Y, '-oy');
+
+     % point1
+     p1 = [X(1) Y(1)];
+%      Index1 = find(Xfine <= x1);
+%      IndexUp = Index1(end);
+     p2 = [X(2) Y(2)];
+     % right point
+
+%      Index2 = find(Xfine >= PosiUp);
+%      IndexDown = Index2(1);
+     px_dist = norm(p1-p2); 
+     
+     PixelS = handles.pixelS;
+     Offset = 33/PixelS;% the real boundary is inward of the position from test
+     
+     handles.cell_length = handles.pixelS*px_dist;
+
+     LenS{1,1} = ['Cell length: ' num2str(round(handles.cell_length,-2), '%.0f') ' nm'];
+
+     set(handles.length_text, 'String', LenS);
+     
+% get the cell outline
+%      CellOut(1,1) = Xfine(IndexUp) + Offset;
+%      CellOut(1,2) = ScanFine(IndexUp); % first row, the position and intensity of the left point
+%      CellOut(2,1) = Xfine(IndexDown) - Offset;
+%      CellOut(2,2) = ScanFine(IndexDown);% second row, the position and intensity of the right point
+%      CellOut(3,1) = (Xfine(IndexLeft) + Xfine(IndexRight))/2; 
+%      CellOut(3,2) = mean(max(ScanFine));% third row, the position and intensity of the center of the cell
+
+%      Y = size(handles.BFRot,1);
+%      axes(handles.BFimage_tag);
+%      hold on
+%      plot(CellOut(1,1)*ones(Y),[1:Y],'-b');
+%      plot(CellOut(2,1)*ones(Y),[1:Y],'-g');
+%      plot(CellOut(3,1)*ones(Y),[1:Y],'-r');
+%      hold off
+    guidata(hObject,handles);
