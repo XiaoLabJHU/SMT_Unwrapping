@@ -6,6 +6,8 @@ clear; clc;
 %Answer with '2D' or '3D'.
 Tracking = '2D';
 
+
+%Ask user to input main directory.
 cd(uigetdir([]));
 
 TS_Directory = dir('TS_Results');

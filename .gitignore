@@ -9,3 +9,4 @@ combined-plot.tif
 *.fig
 *.tif
 *.jpg
+ImageJ_PreProcessing/MYT_resize_tst.ijm
