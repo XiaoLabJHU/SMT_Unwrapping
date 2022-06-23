@@ -1,4 +1,4 @@
-function Refine_Trajectories(filenameIn,pathname,Experiment,ExpT,PixelS,ThreshT);
+function Refine_Trajectories(filenameIn,pathname,Experiment,ExpT,PixelS,ThreshT,StrainName);
 
 CountIndex = 1; % an index for later filter
 
@@ -146,6 +146,7 @@ for ii = 1 : length(filename)
                 yline(Ipeak,'-k','mode');
                 yline(Ipeak + Isd,'--k','1 sigma');
                 yline(Threshold_I,'-r','threshold');
+                IndTrack(CountIndex2).StrainName = StrainName;
                 IndTrack(CountIndex2).OriginTrace = Trace;
                 IndTrack(CountIndex2).Trace = NewTrace;
                 IndTrack(CountIndex2).Radius = Radius;

@@ -1,6 +1,13 @@
-function Segment_Trajectories(Index,filename,pathname,Input_Params);
+function Segment_Blinded_Trajectories(Index, Ind_path, Input_Params)
 
-load([pathname filename]);
+load(Ind_path);
+
+if Input_Params.martin_is_in_lab
+    MartinsMonitors = get(0,'MonitorPositions');
+    questdlgpos = [0.01+MartinsMonitors(1,2),0.05];
+else
+    questdlgpos = [0.01,0.32];
+end
 
 %Parse arguments
 Experiment =  Input_Params.Experiment;
@@ -17,7 +24,8 @@ SpeedMatrix = Input_Params.Simul_strucs.SpeedMatrix;
 TimeMatrix = Input_Params.Simul_strucs.TimeMatrix;
 Traj_struc = Input_Params.Simul_strucs.Traj_struc;
 frameMatrix = Input_Params.Simul_strucs.frameMatrix;
-
+Strain_Curr = IndTrack(Index).StrainName;
+Threshold = Threshold_all(strcmp(Strain_Curr,{Threshold_all.Strain}));
 
 
 % segmentation start here
@@ -35,7 +43,7 @@ switch Experiment
         Radius = IndTrack(Index).Radius;
     case '2D_Tracking'
         TraceXY = Trace(:,2:3); % for plotting, in pixel
-        TraceX = Trace(:,2)*PixelS % in nm
+        TraceX = Trace(:,2)*PixelS; % in nm
         TraceY = Trace(:,3)*PixelS; % in nm
         ImBF = IndTrack(Index).BFim; % load the bright field
         TraceXY(:,1) = TraceXY(:,1) + Center(1);
@@ -44,18 +52,17 @@ switch Experiment
     case '3D_Tracking'
         Time = Time - Time(1);
         TraceXY = Trace(:,2:3); % for plotting, in pixel
-        TraceX = Trace(:,4)*PixelS % in nm
+        TraceX = Trace(:,4)*PixelS; % in nm
         TraceY = (Trace(:,3) - Center(2))*PixelS; % in nm
         ImBF = IndTrack(Index).BFim; % load the bright field
         TraceXY(:,1) = TraceXY(:,1) + Center(1);
         TraceXY(:,2) = TraceXY(:,2);
 end
-Xnoise = Threshold_all.Xnoise;
+Xnoise = Threshold.Xnoise;
 % GUI
-h = figure;
-set(h, 'position',[100,100,1800,800]);
-%quick fix
-set(h, 'Resize', 'on');
+Pix_SS = get(0,'screensize');
+%h = figure('Visible','On','position',[1,1,Pix_SS(3),Pix_SS(4)],'CreateFcn','movegui center');
+h = figure('Visible','On','position',MartinsMonitors(2,:));
 
 % show the bright field image
 switch Experiment
@@ -108,27 +115,29 @@ switch Experiment
             ylabel('Long Axis Position(nm)');
             xlabel('Time/second')
             % first select a region where long axis looks correct
-            responseLong=questdlg(['Select the middle of the cell in long axis'], ...
+            responseLong=MFquestdlg(questdlgpos,['Select the middle of the cell in long axis'], ...
                 'Select', 'Okay' , 'Useall','Bad Trajectory','Okay');
             if strcmp(responseLong,'Okay')
                 [Xl Yl] = ginput(2);
             elseif strcmp(responseLong,'Useall')
                 Xl = [min(Time),max(Time)];
             else
-                close(h)
-                error('User terminated the session since the trajectory is not great!')
+                close(h);
+                disp('User terminated the session since the trajectory is not great!');
+                return;
+                
             end
 
             IndexL = find(Time > min(Xl) & Time < max(Xl));
             MeanY = mean(TraceY(IndexL));
-            Y_up = MeanY + Threshold_all.Ynoise; % upper bound of the long axis
-            Y_down = MeanY - Threshold_all.Ynoise; % lower bound of the long axis
+            Y_up = MeanY + Threshold.Ynoise; % upper bound of the long axis
+            Y_down = MeanY - Threshold.Ynoise; % lower bound of the long axis
             yline(Y_up,'r','Upper bound')
             yline(Y_down,'r','Lower bound')
             IndexY = find(TraceY>=Y_down & TraceY<=Y_up);
             hold on
             plot(Time(IndexY),TraceY(IndexY)-min(MeanY,50),'-.r','linewidth',1.5)
-            responseLongC=questdlg( ['Is the selected region good?'],'Selection check', 'Yes' ,'No','Yes');
+            responseLongC=MFquestdlg(questdlgpos,['Is the selected region good?'],'Selection check', 'Yes' ,'No','Yes');
             if strcmp(responseLongC,'Yes')
                 YaxisCheck = 1;
                 Time_TY = Time(IndexY);
@@ -154,19 +163,19 @@ guidata(h,handles);
 colorCodeTracePlot(Time_TY, [Time_TY,TraceX_TY],1.5)
 switch Experiment
     case 'Nanopillar'
-        xlim(Threshold_all.TimeRange);
-        ylim(Threshold_all.Thetas)
+        xlim(Threshold.TimeRange);
+        ylim(Threshold.Thetas)
     case '2D_Tracking'
         xlim(TimeRange)
         ylim(PosiXRang)
     case '3D_Tracking'
-        xlim(Threshold_all.TimeRange);
-        if Threshold_all.TraceXrange(1) < -1000 & Threshold_all.TraceXrange(2) > 1000;
+        xlim(Threshold.TimeRange);
+        if Threshold.TraceXrange(1) < -1000 & Threshold.TraceXrange(2) > 1000;
             ylim(PosiXRang);
-        elseif Threshold_all.TraceXrange(1) < -1000;
-            ylim([-1000, Threshold_all.TraceXrange(2)]);
-        elseif Threshold_all.TraceXrange(2) > 1000;
-            ylim([Threshold_all.TraceXrange(1),1000]);
+        elseif Threshold.TraceXrange(1) < -1000;
+            ylim([-1000, Threshold.TraceXrange(2)]);
+        elseif Threshold.TraceXrange(2) > 1000;
+            ylim([Threshold.TraceXrange(1),1000]);
         end
 end
 ylabel('Septal Position(nm)');
@@ -178,7 +187,7 @@ switch Experiment
     yline((RangeX(1)-Center(1))*PixelS,'r');
     yline((RangeX(2)-Center(1))*PixelS,'r');
 end
-set(gca,'xtick',[],'xticklabel',[],'XColor','k','YColor','k')
+set(gca,'xtick',[],'xticklabel',[],'XColor','k','YColor','k','TickDir','Out')
 box on
 grid on
 
@@ -188,7 +197,7 @@ switch Experiment
         hs3 = subplot('position',[0.26,0.05,0.70,0.27]);
         hold off;
         pResid = plot(Time,rho_residuals.*PixelS,'.k','Color',rgb('FireBrick'),'MarkerSize',10);
-        xlim(Threshold_all.TimeRange);
+        xlim(Threshold.TimeRange);
         hold on;
         yline(0,'--k','Color',rgb('MidnightBlue'),'LineWidth',1.5);
         hold on;
@@ -210,12 +219,13 @@ end
 Istate = 1; % state counter
 EndFlag = 1; % the flag to end the selection
 while EndFlag ~= 0
-    response=questdlg(['Select the ' num2str(Istate) 'state in the trace'], ...
+    response=MFquestdlg(questdlgpos,['Select the ' num2str(Istate) 'state in the trace'], ...
         'Select a state?', 'Yes' , 'No','Yes');
     if strcmp(response,'Yes')
-        SelectFlag = 0  % flag for saving one selection
+        SelectFlag = 0;  % flag for saving one selection
         while SelectFlag == 0
-            FigSave = ['Fig-' filename(1:find(filename == '.')-1) '-ind' num2str(Index) '-seg' num2str(Istate) '.jpg'];
+            period = find(IndTrack(Index).file == '.');
+            FigSave = ['Ind-' num2str(Index) '-Str-' IndTrack(Index).StrainName '-' IndTrack(Index).file(1:8) '-' IndTrack(Index).file(period-2:period-1) '-seg-' num2str(Istate) '.jpg'];
             set(h, 'currentaxes', hs2);
             [X Y] = ginput(2);
             X_1 = min(X);
@@ -252,7 +262,7 @@ while EndFlag ~= 0
             RatioXboot(1,1) = mean(RatioXb);
             RatioXboot(1,2) = std(RatioXb);
             
-            % start the probability calculation
+            % start the probabiliry calculation
             Ratio_region = [RatioXboot(1,1) - RatioXboot(1,2), RatioXboot(1,1) + RatioXboot(1,2)]; % consider the Ratio is in a range of bootstrapping
             frameL = round((X_2-X_1)/ExpT); % the closest frame length of the trajectories
             [R_V,R_0,Traj_V,Traj_0] = addVoneFLtrajs(Traj_struc,R_struc,Frame_L,frameL,TimeMatrix,Vxboot(1,1)); % get the R distributions
@@ -264,7 +274,7 @@ while EndFlag ~= 0
             [hRV,hRVx] = hist(R_V,[0:0.05:2.5]);
             [hR0,hR0x] = hist(R_0,[0:0.05:2.5]);
             
-            hs4 = subplot('position',[0.04,0.06,0.15,0.25])
+            hs4 = subplot('position',[0.04,0.06,0.15,0.25]);
             hold off
             plot(hRVx(2:end-1),hRV(2:end-1),'g-','linewidth',1.5);
             hold on
@@ -277,13 +287,23 @@ while EndFlag ~= 0
             title(['V = ' num2str(Vxboot(1),2) '; R=' num2str(RatioXboot(1),2) ';P-progress = ' num2str(P_directional,2)]);
             
             % ask whether it is okay to select this
-            response=questdlg(['Is this selection okay?'], ...
+            response=MFquestdlg(questdlgpos,'Is this selection okay?', ...
                 'Check', 'Yes' , 'No','Yes');
             if strcmp(response,'Yes')
-                if 7 ~= exist('SegmentedTrajs','dir');
-                    mkdir('SegmentedTrajs');
-                end
-                saveas(h,[pwd '/SegmentedTrajs/' FigSave],'jpg');
+%                 if isfield(Input_Params, 'img_pathname')
+%                     img_pathname = Input_Params.img_pathname;
+%                     img_path = fullfile(img_pathname, FigSave);
+%                 else
+%                     if 7 ~= exist('SegmentedTrajs','dir')
+%                         mkdir('SegmentedTrajs');
+%                     end
+%                     img_path = [pwd '/SegmentedTrajs/' FigSave];
+%                 end
+
+                img_pathname = Input_Params.img_pathname;
+                img_path = fullfile(img_pathname, FigSave);
+                saveas(h, img_path,'jpg');
+                pause(1);
                 StateFit(Istate).P0 = P_0;
                 StateFit(Istate).PV = P_V;
                 StateFit(Istate).P_progressive = P_directional;
@@ -315,6 +335,12 @@ while EndFlag ~= 0
                 delete(hy);
                 delete(hy1);
                 delete(hy2);
+
+                if Istate == 1
+                %If user does not pick ANY seg for the index, overwrite all
+                %previous segs at that index. (for reviewing bad trajs.)
+                    IndTrack(Index).StateFit = [];
+                end
             end
         end
     else
@@ -323,6 +349,6 @@ while EndFlag ~= 0
     
 end
 clear StateFit
-save([pathname filename],'IndTrack','Threshold_all');
+save(Ind_path,'IndTrack','Threshold_all');
 close(h);
 end

@@ -40,12 +40,13 @@ clear; clc;
     % '3D_Tracking' for 3D SMT
     % 'Nanopillar' for Nanopillar experiment
 Experiment = '2D_Tracking'; 
-ExpT = 1; % timeinterval in second
+StrainName = 'JM220';
+ExpT = 0.5; % timeinterval in second
 PixelS = 100; % pixel size in nm
 ThreshT = 10; % the threshold of trajectory length. Only select the trajectories longer than this
-[filenameIn pathname] = uigetfile('.mat','input the unwrapped trajectory files','multiselect','on');
+[filenameIn, pathname] = uigetfile('.mat','input the unwrapped trajectory files','multiselect','on');
 
-Refine_Trajectories(filenameIn,pathname,Experiment,ExpT,PixelS,ThreshT);
+Refine_Trajectories(filenameIn,pathname,Experiment,ExpT,PixelS,ThreshT,StrainName);
 
 %% Section 2: Load the file saved from section1 
 %         1. This section is to get the path and filename of the trajectories filtered in section1
