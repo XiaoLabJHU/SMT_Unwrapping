@@ -2,12 +2,12 @@ function Segment_Blinded_Trajectories(Index, Ind_path, Input_Params)
 
 load(Ind_path);
 
-if Input_Params.martin_is_in_lab
-    MartinsMonitors = get(0,'MonitorPositions');
-    questdlgpos = [0.01+MartinsMonitors(1,2),0.05];
-else
-    questdlgpos = [0.01,0.32];
-end
+% if Input_Params.martin_is_in_lab
+%     MartinsMonitors = get(0,'MonitorPositions');
+%     questdlgpos = [0.01+MartinsMonitors(1,2),0.05];
+% else
+%     questdlgpos = [0.01,0.32];
+% end
 
 %Parse arguments
 Experiment =  Input_Params.Experiment;
@@ -26,6 +26,12 @@ Traj_struc = Input_Params.Simul_strucs.Traj_struc;
 frameMatrix = Input_Params.Simul_strucs.frameMatrix;
 Strain_Curr = IndTrack(Index).StrainName;
 Threshold = Threshold_all(strcmp(Strain_Curr,{Threshold_all.Strain}));
+
+%Parse Optional Arguments
+questdlgpos = Input_Params.questdlgpos;
+figpos = Input_Params.figpos;
+
+% pause_length = 0;
 
 
 % segmentation start here
@@ -62,7 +68,9 @@ Xnoise = Threshold.Xnoise;
 % GUI
 Pix_SS = get(0,'screensize');
 %h = figure('Visible','On','position',[1,1,Pix_SS(3),Pix_SS(4)],'CreateFcn','movegui center');
-h = figure('Visible','On','position',MartinsMonitors(2,:));
+h = figure('Visible','On','position',figpos);
+%%pause to avoid crashes
+%pause(pause_length);
 
 % show the bright field image
 switch Experiment
@@ -115,10 +123,13 @@ switch Experiment
             ylabel('Long Axis Position(nm)');
             xlabel('Time/second')
             % first select a region where long axis looks correct
+            
+%             %pause to avoid crashes
+%             pause(pause_length);
             responseLong=MFquestdlg(questdlgpos,['Select the middle of the cell in long axis'], ...
                 'Select', 'Okay' , 'Useall','Bad Trajectory','Okay');
             if strcmp(responseLong,'Okay')
-                [Xl Yl] = ginput(2);
+                [Xl, Yl] = ginput(2);
             elseif strcmp(responseLong,'Useall')
                 Xl = [min(Time),max(Time)];
             else
@@ -137,6 +148,9 @@ switch Experiment
             IndexY = find(TraceY>=Y_down & TraceY<=Y_up);
             hold on
             plot(Time(IndexY),TraceY(IndexY)-min(MeanY,50),'-.r','linewidth',1.5)
+
+%             %pause to avoid crashes
+%             pause(pause_length);
             responseLongC=MFquestdlg(questdlgpos,['Is the selected region good?'],'Selection check', 'Yes' ,'No','Yes');
             if strcmp(responseLongC,'Yes')
                 YaxisCheck = 1;
@@ -219,6 +233,8 @@ end
 Istate = 1; % state counter
 EndFlag = 1; % the flag to end the selection
 while EndFlag ~= 0
+%     %pause before dlg to avoid crashes
+%     pause(pause_length);
     response=MFquestdlg(questdlgpos,['Select the ' num2str(Istate) 'state in the trace'], ...
         'Select a state?', 'Yes' , 'No','Yes');
     if strcmp(response,'Yes')
@@ -227,7 +243,7 @@ while EndFlag ~= 0
             period = find(IndTrack(Index).file == '.');
             FigSave = ['Ind-' num2str(Index) '-Str-' IndTrack(Index).StrainName '-' IndTrack(Index).file(1:8) '-' IndTrack(Index).file(period-2:period-1) '-seg-' num2str(Istate) '.jpg'];
             set(h, 'currentaxes', hs2);
-            [X Y] = ginput(2);
+            [X, Y] = ginput(2);
             X_1 = min(X);
             X_2 = max(X);
             hold on
@@ -287,6 +303,8 @@ while EndFlag ~= 0
             title(['V = ' num2str(Vxboot(1),2) '; R=' num2str(RatioXboot(1),2) ';P-progress = ' num2str(P_directional,2)]);
             
             % ask whether it is okay to select this
+
+%             pause(pause_length);
             response=MFquestdlg(questdlgpos,'Is this selection okay?', ...
                 'Check', 'Yes' , 'No','Yes');
             if strcmp(response,'Yes')
@@ -303,7 +321,7 @@ while EndFlag ~= 0
                 img_pathname = Input_Params.img_pathname;
                 img_path = fullfile(img_pathname, FigSave);
                 saveas(h, img_path,'jpg');
-                pause(1);
+                %puase(0.5)
                 StateFit(Istate).P0 = P_0;
                 StateFit(Istate).PV = P_V;
                 StateFit(Istate).P_progressive = P_directional;

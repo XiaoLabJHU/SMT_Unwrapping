@@ -1,4 +1,4 @@
-function Segment_Trajectories(Index,filename,pathname,Input_Params);
+function Segment_Trajectories(Index,filename,pathname,Input_Params)
 
 load([pathname filename]);
 

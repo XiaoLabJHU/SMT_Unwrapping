@@ -82,21 +82,24 @@ Input_Params.Nboot = 100; % number of the bootstrapping to get linear fitting
 Input_Params.Pdrop = 0.1; %dropout probability in bootstrapping
 
 %Is Martin in lab?
-response = questdlg('Use two monitor setup?','Is Martin in lab?', 'Yes' ,'No','Yes');
+resp1 = questdlg('Use two monitor setup?','Is Martin in lab?', 'Yes' ,'No','Yes');
 
-if strcmp(response,'Yes')
+if strcmp(resp1,'Yes')
     Input_Params.martin_is_in_lab = 1;
+    MartinsMonitors = get(0,'MonitorPositions');
+    Input_Params.questdlgpos = [0.01+MartinsMonitors(1,2),0.05];
+    Input_Params.figpos = MartinsMonitors(2,:);
 
     Ind_pathname = '/Users/myepes/Xiao Lab Dropbox/Lab Members/Yepes_Martin/Projects/FtsA/20220610-FtsA-FtsZ_SMT/DataSets/';
     Ind_filename = 'R-MYT_Blinded-AZ-Segmentation.mat';
     Ind_path = fullfile([Ind_pathname, Ind_filename]);
     sim_path = '/Users/myepes/Xiao Lab Dropbox/Lab Members/McCausland_Josh/Projects/ZipA_Project/FtsA-FtsZ-Blinded/FtsA-FtsZ_500ms_sim.mat';
     img_pathname = '/Users/myepes/Xiao Lab Dropbox/Lab Members/Yepes_Martin/Projects/FtsA/20220610-FtsA-FtsZ_SMT/SegmentedTrajs';
-
-    %com_path = ''
 else
    
     Input_Params.martin_is_in_lab = 0;
+    Input_Params.questdlgpos = [0.01,0.32];
+    Input_Params.figpos = [100,100,1800,800];
     
     %Define Indtrack path
     disp('Input the pre-processed trace file (with IndTrack)');
@@ -117,6 +120,37 @@ Input_Params.img_pathname = img_pathname;
 Input_Params.Simul_strucs = load(sim_path);
 
 I = load(Ind_path,'IndTrack','Threshold_all');
+
+IndTrack = I.IndTrack;
+disp(['There are ' num2str(length(IndTrack)) ' trajectories in the file']);
+counter = 0;
+for idxa = 1:length(IndTrack)
+    if ~isempty(IndTrack(idxa).StateFit)
+        counter = counter + 1;
+        SegCheck(counter,1) = idxa;
+    end
+end
+if exist('SegCheck','var')
+   i_recent = SegCheck(end);
+   resp2 = questdlg(['The most recently segmented trajectory is number ' num2str(i_recent) '.'],'Resume Segmenting?', 'Yes' ,'No','Yes');
+   if strcmp(resp2,'Yes')
+    for i = (i_recent+1):3316
+
+        close("all");
+        Segment_Blinded_Trajectories(i, Ind_path,Input_Params);
+        
+        MartinsMonitors = get(0,'MonitorPositions');
+        
+        resp3 = MFquestdlg([0.01+MartinsMonitors(1,2),0.05],'Continue?','Proceed to the next step?', 'Yes' ,'No','Yes');
+        %response = questdlg(['Continue?'],'Proceed to the next step?','Yes','No','Yes');
+        if strcmp(resp3,'No')
+            disp(['i = '  num2str(i) ' (' num2str(100*i/length(IndTrack),3) '%)']);
+            break
+        end
+     end
+   end
+   %disp(['The most recently segmented trajectory is number ' num2str(SegCheck(end)) '.']);
+end
 %% MYT Section 2: Resolve comments
 
 close("all");
@@ -254,14 +288,15 @@ Input_Params.Simul_strucs = load(sim_path);
 %                 b. [V, DisplXb, StDXb, RatioXb, NXb] = tracedropout(TimeT_TXY,TraceTx,Nboot,Pdrop)
 %                 c. [R_V,R_0,Traj_V,Traj_0] = addVoneFLtrajs(Traj_struc,R_struc,Frame_L,frameL,TimeMatrix,V)
 %                d. Prob = getProbR(R_sample,Bin,epsl)
-Index = 752  % change this line from 1 to the max index of trajectories
+Index = 1264  % change this line from 1 to the max index of trajectories
 
-
+close("all");
 Segment_Blinded_Trajectories(Index, Ind_path, Input_Params);
 
 %% Iterate Quickly
 
 for i = (Index+1):3316 
+    close("all");
     Segment_Blinded_Trajectories(i, Ind_path,Input_Params);
     
     MartinsMonitors = get(0,'MonitorPositions');
@@ -269,7 +304,7 @@ for i = (Index+1):3316
     response = MFquestdlg([0.01+MartinsMonitors(1,2),0.05],'Continue?','Proceed to the next step?', 'Yes' ,'No','Yes');
     %response = questdlg(['Continue?'],'Proceed to the next step?','Yes','No','Yes');
     if strcmp(response,'No')
-        disp(['i = '  num2str(i) ' (' num2str(100*i/length(IndTrack)) '%)']);
+        disp(['i = '  num2str(i) ' (' num2str(100*i/length(IndTrack),3) '%)']);
         break
     end
 end
